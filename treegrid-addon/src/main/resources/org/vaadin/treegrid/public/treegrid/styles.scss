@@ -1,0 +1,49 @@
+div.treegrid {
+	cursor: pointer;
+	user-select: none;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+}
+
+$tree-spacer-width: 10px;
+$tree-spacer-padding: 10px;
+$indent: $tree-spacer-width + $tree-spacer-padding;
+
+.v-tree-grid-expand-button {
+  display: inline-block;
+  width: 10px;
+  padding-right: 10px;
+
+  &::before {
+    display: inline-block;
+    padding-right: 4px;
+    font-family: FontAwesome;
+  }
+
+  &.expanded {
+    &::before {
+      content: '\f0d7';
+    }
+  }
+
+  &.collapsed {
+    &::before {
+      content: '\f0da';
+    }
+  }
+}
+
+.v-tree-grid-node {
+  &.depth-0 {
+    padding-left: $indent * 0;
+  }
+
+  &.depth-1 {
+    padding-left: $indent * 1;
+  }
+
+  &.depth-2 {
+    padding-left: $indent * 2;
+  }
+}

@@ -21,4 +21,6 @@
     -->
     <!-- <set-property name="user.agent" value="safari"/> -->
 
+
+    <inherits name="com.vaadin.DefaultWidgetSet" />
 </module>
