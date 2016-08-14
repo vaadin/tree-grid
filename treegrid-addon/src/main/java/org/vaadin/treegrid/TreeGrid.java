@@ -3,6 +3,7 @@ package org.vaadin.treegrid;
 import com.vaadin.data.Container;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
+import com.vaadin.data.util.HierarchicalContainer;
 import com.vaadin.data.util.converter.Converter;
 import com.vaadin.server.JsonCodec;
 import com.vaadin.server.communication.data.DataGenerator;
@@ -41,6 +42,34 @@ public class TreeGrid extends Grid {
         NavigationExtension.extend(this);
 
 
+    }
+
+    public void setContainerDataSource(TreeGridContainer container) {
+        super.setContainerDataSource(container);
+
+        Column expandableColumn = getColumns().get(0);
+        setHierarchyRenderer(expandableColumn);
+
+//        for (Object itemId : container.getItemIds()) {
+//            container.getParent(itemId);
+//
+//            HierarchyData hd = new HierarchyData();
+//            // TODO: 12/08/16 only works because of the order. store data in container instead
+//            hd.setDepth(container.getParent(itemId) != null ? hierarchyData.get(container.getParent(itemId)).getDepth() + 1 : 0);
+//            hd.setExpanded(true);
+//            hd.setLeaf(container.getChildren(itemId) == null);
+//            hd.setVisible(true);
+//            hd.setParentIndex(container.indexOfId(itemId));
+//            hierarchyData.put(itemId, hd);
+//
+//            if (container.getParent(itemId) != null) {
+//                hierarchyData.get(container.getParent(itemId)).getChildren().add(hd);
+//            }
+//        }
+
+        // TODO: 13/08/16 filter
+        itemVisibilityFilter = new ItemVisibilityFilter();
+        container.addContainerFilter(itemVisibilityFilter);
     }
 
     @Override
@@ -169,32 +198,41 @@ public class TreeGrid extends Grid {
         ((Container.Filterable) getContainerDataSource()).addContainerFilter(itemVisibilityFilter);
     }
 
+    private void toggleExpansion(Object itemId) {
+        getContainer().setCollapsed(itemId, !getContainer().isCollapsed(itemId));
+    }
+
     private void setHierarchyRenderer(Column column) {
-//        // Instantiate hierarchy renderer
-//        HierarchyRenderer renderer = new HierarchyRenderer(String.class);
-////        HierarchyRenderer renderer = new HierarchyRenderer(org.vaadin.treegrid.HierarchyData.class);
-//
-//        // Listen to click events
-//        renderer.addClickListener(new ClickableRenderer.RendererClickListener() {
-//            @Override
-//            public void click(ClickableRenderer.RendererClickEvent rendererClickEvent) {
-//                // handle hierarchy click events
-//                Object itemId = rendererClickEvent.getItemId();
-//
+        // Instantiate hierarchy renderer
+        HierarchyRenderer renderer = new HierarchyRenderer(String.class);
+//        HierarchyRenderer renderer = new HierarchyRenderer(org.vaadin.treegrid.HierarchyData.class);
+
+        // Listen to click events
+        renderer.addClickListener(new ClickableRenderer.RendererClickListener() {
+            @Override
+            public void click(ClickableRenderer.RendererClickEvent rendererClickEvent) {
+                // handle hierarchy click events
+                Object itemId = rendererClickEvent.getItemId();
+
 //                handleExpansion(itemId);
-//            }
-//        });
-//
-////        HRenderer renderer = new HRenderer(String.class);
-//
-//        column.setRenderer(renderer);
+                toggleExpansion(itemId);
+
+                if (getContainer().doFilterContainer(true)) {
+                    getContainer().fireItemSetChange();
+                }
+            }
+        });
+
+//        HRenderer renderer = new HRenderer(String.class);
+
+        column.setRenderer(renderer);
 
 //        getColumn("email").setRenderer(new HtmlRenderer());
 
 
         // ---
 //        column.setRenderer(new HierarchyRenderer(String.class));
-        column.setRenderer(new HierarchyRenderer2(String.class));
+//        column.setRenderer(new HierarchyRenderer2(String.class));
         // ---
 
 
@@ -231,12 +269,19 @@ public class TreeGrid extends Grid {
 //        });
     }
 
+    public TreeGridContainer getContainer() {
+        return (TreeGridContainer) super.getContainerDataSource();
+    }
+
     private class HierarchyDataGenerator extends AbstractGridExtension implements DataGenerator {
         @Override
         public void generateData(Object itemId, Item item, JsonObject rowData) {
 
+//            rowData.put(GridState.JSONKEY_ROWDESCRIPTION,
+//                    JsonCodec.encode(hierarchyData.get(itemId), null, HierarchyData.class,
+//                            getUI().getConnectorTracker()).getEncodedValue());
             rowData.put(GridState.JSONKEY_ROWDESCRIPTION,
-                    JsonCodec.encode(hierarchyData.get(itemId), null, HierarchyData.class,
+                    JsonCodec.encode(getContainer().getHierarchyData(itemId), null, HierarchyData.class,
                             getUI().getConnectorTracker()).getEncodedValue());
         }
 
@@ -249,7 +294,22 @@ public class TreeGrid extends Grid {
     private class ItemVisibilityFilter implements Container.Filter {
         @Override
         public boolean passesFilter(Object itemId, Item item) throws UnsupportedOperationException {
-            return hierarchyData.get(itemId).isVisible();
+//            return hierarchyData.get(itemId).isVisible();
+
+            // TODO: 14/08/16 root
+//            return getContainer().isRoot(itemId) || !getContainer().isCollapsed(getContainer().getParent(itemId));
+            boolean root = getContainer().getHierarchyData(itemId).getDepth() == 0;
+            boolean ancestorCollapsed = false;
+            Object parentId = itemId;
+            while ((parentId = getContainer().getParent(parentId, true)) != null && !ancestorCollapsed) {
+                if (getContainer().isCollapsed(parentId)) {
+                    ancestorCollapsed = true;
+                }
+            }
+
+            return root || !ancestorCollapsed;
+//            return getContainer().getHierarchyData(itemId).getDepth() == 0 ||
+//                    !getContainer().isCollapsed(getContainer().getParent(itemId, true));
         }
 
         @Override
@@ -257,4 +317,6 @@ public class TreeGrid extends Grid {
             return false;
         }
     }
+
+    // TODO: 11/08/16 setCollapsed(itemId, boolean)
 }

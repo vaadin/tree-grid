@@ -79,6 +79,10 @@ $darkgreen: darken($green, 30%);
 			padding-left: $indent * 2;
 		}
 
+		&.depth-3 {
+			padding-left: $indent * 3;
+		}
+
 		.v-tree-grid-cell-content {
 			display: inline-block;
 		}

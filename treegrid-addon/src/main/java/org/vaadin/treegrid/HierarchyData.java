@@ -9,8 +9,9 @@ import java.util.Set;
 public class HierarchyData {
     private int depth;
     private boolean expanded;
-    private boolean leaf;
+    private boolean leaf = true;
     private boolean visible;
+    private int parentIndex;
 
     // TODO: 28/07/16 reference to children
     private Set<HierarchyData> children = new HashSet<>();
@@ -49,5 +50,13 @@ public class HierarchyData {
 
     public void setVisible(boolean visible) {
         this.visible = visible;
+    }
+
+    public int getParentIndex() {
+        return parentIndex;
+    }
+
+    public void setParentIndex(int parentIndex) {
+        this.parentIndex = parentIndex;
     }
 }

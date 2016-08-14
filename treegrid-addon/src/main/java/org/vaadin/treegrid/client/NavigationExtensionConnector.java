@@ -35,11 +35,13 @@ public class NavigationExtensionConnector extends AbstractExtensionConnector {
                         boolean expanded = false;
                         boolean leaf = false;
                         int depth;
+                        int parentIndex;
                         if (cell.getRow().hasKey(GridState.JSONKEY_ROWDESCRIPTION)) {
                             JsonObject rowDescription = cell.getRow().getObject(GridState.JSONKEY_ROWDESCRIPTION);
                             expanded = rowDescription.getBoolean("expanded");
                             leaf = rowDescription.getBoolean("leaf");
                             depth = (int) rowDescription.getNumber("depth");
+                            parentIndex = (int) rowDescription.getNumber("parentIndex");
 
                             switch (event.getKeyCode()) {
                                 case KeyCodes.KEY_RIGHT:
@@ -62,6 +64,7 @@ public class NavigationExtensionConnector extends AbstractExtensionConnector {
                                         rpc.toggleExpansion(getParent().getRowKey(cell.getRow()));
                                     } else if (depth > 0) {
                                         // jump to parent
+                                        grid.setFocus(parentIndex, cell.getColumnIndex());
                                         // TODO: 04/08/16
 //                                        cell.getGrid().scrollToRow(rowIndex);
                                     }

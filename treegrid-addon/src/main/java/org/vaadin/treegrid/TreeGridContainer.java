@@ -1,129 +1,96 @@
 package org.vaadin.treegrid;
 
-import com.vaadin.data.Container;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import com.vaadin.data.Collapsible;
 import com.vaadin.data.Item;
-import com.vaadin.data.Property;
-import com.vaadin.data.util.AbstractContainer;
+import com.vaadin.data.util.HierarchicalContainer;
 
-import java.util.Collection;
+public class TreeGridContainer extends HierarchicalContainer implements
+        Collapsible {
 
-/**
- * Created by adam on 29/07/16.
- */
-@Deprecated
-public class TreeGridContainer extends AbstractContainer implements Container.Sortable {
-    @Override
-    public void sort(Object[] propertyId, boolean[] ascending) {
+    private Map<Object, HierarchyData> hierarchyData = new HashMap<>();
 
+    public void addChildren(List<Object> items, Object parentId) {
+        for (Object item : items) {
+            addItem(item);
+            setParent(item, parentId);
+        }
     }
 
     @Override
-    public Collection<?> getSortableContainerPropertyIds() {
-        return null;
+    public Item addItem(Object itemId) {
+        Item item = super.addItem(itemId);
+
+        hierarchyData.put(itemId, new HierarchyData());
+
+        return item;
     }
 
-    @Override
-    public Object nextItemId(Object itemId) {
-        return null;
-    }
+    private Map<Object, Object> parents = new HashMap<>();
 
     @Override
-    public Object prevItemId(Object itemId) {
-        return null;
-    }
+    public boolean setParent(Object itemId, Object newParentId) {
+        if (super.setParent(itemId, newParentId)) {
+            // parent index
+            hierarchyData.get(itemId).setParentIndex(indexOfId(newParentId));
 
-    @Override
-    public Object firstItemId() {
-        return null;
-    }
+            // leaf
+            hierarchyData.get(newParentId).setLeaf(false);
 
-    @Override
-    public Object lastItemId() {
-        return null;
-    }
+            // depth
+            hierarchyData.get(itemId).setDepth(hierarchyData.get(newParentId).getDepth() + 1);
 
-    @Override
-    public boolean isFirstId(Object itemId) {
+            // set parents, todo either super's modifier to protected or add extra method there
+            parents.put(itemId, newParentId);
+
+            return true;
+        }
+
         return false;
     }
 
-    @Override
-    public boolean isLastId(Object itemId) {
-        return false;
+    public Object getParent(Object itemId, boolean unfiltered) {
+        return unfiltered ? this.parents.get(itemId) : super.getParent(itemId);
     }
 
     @Override
-    public Object addItemAfter(Object previousItemId) throws UnsupportedOperationException {
-        return null;
+    protected boolean doFilterContainer(boolean hasFilters) {
+        boolean itemSetChanged = super.doFilterContainer(hasFilters);
+
+        // parent index
+        for (Object itemId : getVisibleItemIds()) {
+            hierarchyData.get(itemId).setParentIndex(indexOfId(getParent(itemId)));
+        }
+
+        return itemSetChanged;
+    }
+
+    // Make it visible in the package
+    @Override
+    protected void fireItemSetChange() {
+        super.fireItemSetChange();
     }
 
     @Override
-    public Item addItemAfter(Object previousItemId, Object newItemId) throws UnsupportedOperationException {
-        return null;
+    public void setCollapsed(Object itemId, boolean collapsed) {
+        hierarchyData.get(itemId).setExpanded(!collapsed);
     }
 
     @Override
-    public Item getItem(Object itemId) {
-        return null;
+    public boolean isCollapsed(Object itemId) {
+        return !hierarchyData.get(itemId).isExpanded();
     }
 
-    @Override
-    public Collection<?> getContainerPropertyIds() {
-        return null;
+    HierarchyData getHierarchyData(Object itemId) {
+        return hierarchyData.get(itemId);
     }
 
-    @Override
-    public Collection<?> getItemIds() {
-        return null;
-    }
 
-    @Override
-    public Property getContainerProperty(Object itemId, Object propertyId) {
-        return null;
-    }
 
-    @Override
-    public Class<?> getType(Object propertyId) {
-        return null;
-    }
-
-    @Override
-    public int size() {
-        return 0;
-    }
-
-    @Override
-    public boolean containsId(Object itemId) {
-        return false;
-    }
-
-    @Override
-    public Item addItem(Object itemId) throws UnsupportedOperationException {
-        return null;
-    }
-
-    @Override
-    public Object addItem() throws UnsupportedOperationException {
-        return null;
-    }
-
-    @Override
-    public boolean removeItem(Object itemId) throws UnsupportedOperationException {
-        return false;
-    }
-
-    @Override
-    public boolean addContainerProperty(Object propertyId, Class<?> type, Object defaultValue) throws UnsupportedOperationException {
-        return false;
-    }
-
-    @Override
-    public boolean removeContainerProperty(Object propertyId) throws UnsupportedOperationException {
-        return false;
-    }
-
-    @Override
-    public boolean removeAllItems() throws UnsupportedOperationException {
-        return false;
-    }
+//    private class HierarchyInformation {
+//        private int depth;
+//    }
 }

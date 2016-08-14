@@ -151,7 +151,7 @@ public class HierarchyRenderer2 extends WidgetRenderer<String, Widget> {
         private void setDepth(int depth) {
             // indentation
             // TODO: 01/08/16 Is this method for removing old indentation effective?
-            for (int i = 0; i < 3; i++) {
+            for (int i = 0; i < 3 ; i++) {
                 panel.getElement().removeClassName(CLASS_DEPTH + i);
             }
             panel.getElement().addClassName(CLASS_DEPTH + depth);
