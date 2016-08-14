@@ -11,13 +11,14 @@ public class NavigationExtension extends Grid.AbstractGridExtension {
     private NavigationExtension(TreeGrid grid) {
         super(grid);
 
-//        registerRpc(new NavigationExtensionConnector.NodeExpansionRpc() {
-//            @Override
-//            public void toggleExpansion(String rowKey) {
-//                Object itemId = getItemId(rowKey);
+        registerRpc(new NavigationExtensionConnector.NodeExpansionRpc() {
+            @Override
+            public void toggleExpansion(String rowKey) {
+                Object itemId = getItemId(rowKey);
 //                grid.handleExpansion(itemId);
-//            }
-//        });
+                grid.toggleExpansion(itemId);
+            }
+        });
     }
 
     public static NavigationExtension extend(TreeGrid grid) {

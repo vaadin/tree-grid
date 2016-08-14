@@ -198,8 +198,12 @@ public class TreeGrid extends Grid {
         ((Container.Filterable) getContainerDataSource()).addContainerFilter(itemVisibilityFilter);
     }
 
-    private void toggleExpansion(Object itemId) {
+    void toggleExpansion(Object itemId) {
         getContainer().setCollapsed(itemId, !getContainer().isCollapsed(itemId));
+
+        if (getContainer().doFilterContainer(true)) {
+            getContainer().fireItemSetChange();
+        }
     }
 
     private void setHierarchyRenderer(Column column) {
@@ -217,9 +221,9 @@ public class TreeGrid extends Grid {
 //                handleExpansion(itemId);
                 toggleExpansion(itemId);
 
-                if (getContainer().doFilterContainer(true)) {
-                    getContainer().fireItemSetChange();
-                }
+//                if (getContainer().doFilterContainer(true)) {
+//                    getContainer().fireItemSetChange();
+//                }
             }
         });
 
