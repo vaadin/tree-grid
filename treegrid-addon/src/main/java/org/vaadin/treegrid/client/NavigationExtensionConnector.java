@@ -1,5 +1,7 @@
 package org.vaadin.treegrid.client;
 
+import org.vaadin.treegrid.NavigationExtension;
+
 import com.google.gwt.dom.client.BrowserEvents;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.user.client.Event;
@@ -10,12 +12,9 @@ import com.vaadin.client.widget.grid.EventCellReference;
 import com.vaadin.shared.communication.ServerRpc;
 import com.vaadin.shared.ui.Connect;
 import com.vaadin.shared.ui.grid.GridState;
-import elemental.json.JsonObject;
-import org.vaadin.treegrid.NavigationExtension;
 
-/**
- * Created by adam on 01/08/16.
- */
+import elemental.json.JsonObject;
+
 @Connect(NavigationExtension.class)
 public class NavigationExtensionConnector extends AbstractExtensionConnector {
     @Override

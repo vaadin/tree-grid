@@ -4,9 +4,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.DomEvent;
 import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
@@ -28,21 +26,12 @@ public class HierarchyRenderer2 extends WidgetRenderer<String, Widget> {
 
     @Override
     public Widget createWidget() {
-//        return new HierarchyItem();
-//        LayoutPanel panel = new LayoutPanel();
-
-//        LayoutPanel panel = GWT.create(LayoutPanel.class);
-//        panel.add(new SimplePanel());
-//        panel.add(new Label("test"));
-//        return panel;
-//        return new HierarchyItem2();
         return new HierarchyItem(CLASS_TREE_GRID_NODE);
     }
 
     @Override
     public void render(RendererCellReference cell, String data,
             Widget widget) {
-//        ((HierarchyItem2) widget).setText(data);
 
         JsonObject row = (JsonObject) cell.getRow();
 
@@ -73,54 +62,6 @@ public class HierarchyRenderer2 extends WidgetRenderer<String, Widget> {
             cellWidget.setExpanderState(ExpanderState.COLLAPSED);
         }
     }
-
-//    public static class HierarchyItem2 extends ComplexPanel {
-//
-//        Element e1;
-//        Element e2;
-//
-//        public HierarchyItem2() {
-////            Element wrapper = Document.get().createDivElement();
-////            setElement(wrapper);
-//
-////            wrapper.appendChild(new Label("test"));
-//
-//
-//            setElement(Document.get().createDivElement());
-//
-//            e1 = Document.get().createSpanElement();
-//            e2 = Document.get().createDivElement();
-//
-//            getElement().appendChild(e1);
-//            getElement().appendChild(e2);
-////            getElement().appendChild(Document.get().createSpanElement());
-////            getElement().appendChild(Document.get().createDivElement());
-//
-//            e1.addClassName("v-tree-grid-expand-button");
-//            e1.addClassName("expanded");
-//
-//            e2.getStyle().setDisplay(Style.Display.INLINE_BLOCK);
-//
-////            DOM.sinkBitlessEvent(e1, Event.CLICK);
-//            Event.sinkEvents(e1, Event.ONCLICK);
-//            Event.setEventListener(e1, new EventListener() {
-//                @Override
-//                public void onBrowserEvent(Event event) {
-//                    if (Event.ONCLICK == event.getTypeInt()) {
-//    //                    widget.fireEvent(null);
-//                        Window.alert("click");
-//
-//                        event.stopPropagation();
-//                        event.preventDefault();
-//                    }
-//                }
-//            });
-//        }
-//
-//        public void setText(String text) {
-//            e2.setInnerText(text);
-//        }
-//    }
 
     private class HierarchyItem extends Composite {
 
@@ -175,10 +116,6 @@ public class HierarchyRenderer2 extends WidgetRenderer<String, Widget> {
         }
 
         private class Expander extends Widget {
-
-//            private enum State {
-//                EXPANDED, COLLAPSED, LEAF;
-//            }
 
             private Expander() {
                 Element span = DOM.createSpan();

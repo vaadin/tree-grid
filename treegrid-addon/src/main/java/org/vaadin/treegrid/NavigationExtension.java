@@ -3,9 +3,6 @@ package org.vaadin.treegrid;
 import com.vaadin.ui.Grid;
 import org.vaadin.treegrid.client.NavigationExtensionConnector;
 
-/**
- * Created by adam on 01/08/16.
- */
 public class NavigationExtension extends Grid.AbstractGridExtension {
 
     private NavigationExtension(TreeGrid grid) {

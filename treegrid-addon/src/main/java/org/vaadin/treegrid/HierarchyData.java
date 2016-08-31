@@ -3,9 +3,6 @@ package org.vaadin.treegrid;
 import java.util.HashSet;
 import java.util.Set;
 
-/**
- * Created by adam on 28/07/16.
- */
 public class HierarchyData {
     private int depth;
     private boolean expanded;

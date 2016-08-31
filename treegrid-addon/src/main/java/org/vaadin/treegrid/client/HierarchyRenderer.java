@@ -1,24 +1,17 @@
 package org.vaadin.treegrid.client;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.SpanElement;
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.EventListener;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.vaadin.client.renderers.ClickableRenderer;
 import com.vaadin.client.widget.grid.RendererCellReference;
 import com.vaadin.shared.ui.grid.GridState;
+
 import elemental.json.JsonObject;
 
 public class HierarchyRenderer extends ClickableRenderer<String, Widget> {
@@ -30,15 +23,6 @@ public class HierarchyRenderer extends ClickableRenderer<String, Widget> {
     private static final String CLASS_EXPANDED = "expanded";
 
     private static final String CLASS_DEPTH = "depth-";
-
-//    private static Map<Object, HierarchyData> hierarchyData = new HashMap<>();
-//    static {
-//        for (int i = 0; i < 30; i++) {
-//            HierarchyData d = new HierarchyData();
-//            d.indentation = i % 3;
-//            d.open = true;
-//        }
-//    }
 
     @Override
     public Widget createWidget() {
@@ -54,7 +38,6 @@ public class HierarchyRenderer extends ClickableRenderer<String, Widget> {
     @Override
     public void render(RendererCellReference cell, String data,
             Widget widget) {
-//        ((HierarchyItem2) widget).setText(data);
 
         JsonObject row = (JsonObject) cell.getRow();
 
@@ -139,10 +122,6 @@ public class HierarchyRenderer extends ClickableRenderer<String, Widget> {
         }
 
         private class Expander extends Widget {
-
-//            private enum State {
-//                EXPANDED, COLLAPSED, LEAF;
-//            }
 
             private Expander() {
                 Element span = DOM.createSpan();
