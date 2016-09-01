@@ -7,6 +7,7 @@ public class HierarchyData {
     private int depth;
     private boolean expanded;
     private boolean leaf = true;
+    @Deprecated
     private boolean visible;
     private int parentIndex;
 

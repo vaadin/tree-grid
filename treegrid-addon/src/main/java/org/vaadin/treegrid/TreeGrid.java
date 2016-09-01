@@ -1,12 +1,8 @@
 package org.vaadin.treegrid;
 
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
-
+import com.vaadin.data.Collapsible;
 import com.vaadin.data.Container;
 import com.vaadin.data.Item;
-import com.vaadin.data.util.converter.Converter;
 import com.vaadin.server.JsonCodec;
 import com.vaadin.server.communication.data.DataGenerator;
 import com.vaadin.shared.ui.grid.GridState;
@@ -15,17 +11,7 @@ import com.vaadin.ui.renderers.ClickableRenderer;
 
 import elemental.json.JsonObject;
 
-// This is the server-side UI component that provides public API 
-// for TreeGrid
 public class TreeGrid extends Grid {
-
-    // Stores hierarchy data
-    private Map<Object, HierarchyData> hierarchyData = new HashMap<>();
-
-    private Container.Filter itemVisibilityFilter;
-
-    @Deprecated
-    private Object expandableColumnPropertyId;
 
     public TreeGrid() {
         super();
@@ -39,99 +25,44 @@ public class TreeGrid extends Grid {
 
     }
 
+    @Deprecated
     public void setContainerDataSource(TreeGridContainer container) {
         super.setContainerDataSource(container);
 
+        // TODO: 31/08/16 Possibly set hierarchy column explicitly or at least take into account the select column
         Column expandableColumn = getColumns().get(0);
-        setHierarchyRenderer(expandableColumn);
-
-        // TODO: 13/08/16 filter
-        itemVisibilityFilter = new ItemVisibilityFilter();
-        container.addContainerFilter(itemVisibilityFilter);
+        setHierarchyRenderer(expandableColumn); // TODO: 31/08/16 implement composite, possibly not including server side renderer
     }
 
+
+//    public <T extends Container.Indexed & Container.Hierarchical> void setContainerDataSource(T container) {
+//
+//    }
+    // TODO: 31/08/16 make the caller pass a Hierarchical container
     @Override
     public void setContainerDataSource(Container.Indexed container) {
+        if (!(container instanceof Container.Hierarchical)) {
+            throw new IllegalArgumentException("Container must implement Hierarchical interface");
+        }
+
+        // TODO: 31/08/16 maybe implement something similar to TreeTable (below) for containers that don't implement Hierarchical
+//        if (container != null && !(container instanceof Container.Hierarchical)) {
+//            container = new ContainerHierarchicalWrapper(container);
+//        }
+//
+//        if (container != null && !(container instanceof Container.Ordered)) {
+//            container = new HierarchicalContainerOrderedWrapper(
+//                    (Container.Hierarchical) container);
+//        }
+
         super.setContainerDataSource(container);
-
-        Column expandableColumn = getColumns().get(0);
-        setHierarchyRenderer(expandableColumn);
-//        setHierarchyRenderer(getColumn("email"));
-
-        getColumn("email").setConverter(new Converter<String, String>() {
-            @Override
-            public String convertToModel(String value,
-                    Class<? extends String> targetType, Locale locale) throws
-                    ConversionException {
-                return null;
-            }
-
-            @Override
-            public String convertToPresentation(String value,
-                    Class<? extends String> targetType, Locale locale) throws
-                    ConversionException {
-                return String.format("<a href=#>%s</a>", value);
-            }
-
-            @Override
-            public Class<String> getModelType() {
-                return String.class;
-            }
-
-            @Override
-            public Class<String> getPresentationType() {
-                return String.class;
-            }
-        });
-//        getColumn("email").setRenderer(new HtmlRenderer());
-
-        // FIXME fake hierarchy data, to be removed
-        for (int i = 0; i < container.size(); i++) {
-            HierarchyData hd = new HierarchyData();
-            hd.setDepth(i % 3);
-            hd.setExpanded(true);
-            hd.setLeaf(i % 3 == 2);
-            hd.setVisible(true);
-            hierarchyData.put(container.getIdByIndex(i), hd);
-        }
-
-        for (int i = 0; i < container.size() - 1; i++) {
-            if (i % 3 < 2) {
-                HierarchyData hd = hierarchyData.get(container.getIdByIndex(i));
-                hd.getChildren().add(hierarchyData.get(container.getIdByIndex(i+1)));
-            }
-        }
-
-        itemVisibilityFilter = new ItemVisibilityFilter();
-        ((Container.Filterable) container).addContainerFilter(itemVisibilityFilter);
-    }
-
-    public void setExpandableColumn(Object propertyId) {
-        this.expandableColumnPropertyId = propertyId;
-    }
-
-    private void hideChildren(HierarchyData hd) {
-        for (HierarchyData chd : hd.getChildren()) {
-            chd.setVisible(false);
-            hideChildren(chd);
-        }
-    }
-
-    private void showChildren(HierarchyData hd) {
-        for (HierarchyData chd : hd.getChildren()) {
-            chd.setVisible(true);
-            if (chd.isExpanded()) {
-                showChildren(chd);
-            }
-        }
     }
 
     void toggleExpansion(Object itemId) {
-        getContainer().setCollapsed(itemId, !getContainer().isCollapsed(itemId));
+        Collapsible container = (Collapsible) getContainerDataSource();
+        container.setCollapsed(itemId, !container.isCollapsed(itemId)); // Collapsible
 
-        if (getContainer().doFilterContainer(true)) {
-            getContainer().fireItemSetChange();
-        }
+        // TODO: 01/09/16 Does additional support needed for collapsed item visibility?
     }
 
     private void setHierarchyRenderer(Column column) {
@@ -149,20 +80,23 @@ public class TreeGrid extends Grid {
             }
         });
 
-
         column.setRenderer(renderer);
-    }
-
-    public TreeGridContainer getContainer() {
-        return (TreeGridContainer) super.getContainerDataSource();
     }
 
     private class HierarchyDataGenerator extends AbstractGridExtension implements DataGenerator {
         @Override
         public void generateData(Object itemId, Item item, JsonObject rowData) {
 
-            rowData.put(GridState.JSONKEY_ROWDESCRIPTION,
-                    JsonCodec.encode(getContainer().getHierarchyData(itemId), null, HierarchyData.class,
+            TreeGridContainer container = (TreeGridContainer) getContainerDataSource();
+
+            HierarchyData hierarchyData = new HierarchyData();
+            hierarchyData.setDepth(container.getDepth(itemId)); // ? TreeGridContainer
+            hierarchyData.setExpanded(!((Collapsible) container).isCollapsed(itemId));   // Collapsible
+            hierarchyData.setLeaf(!container.hasChildren(itemId));  // Hierarchical
+            hierarchyData.setParentIndex(container.indexOfId(container.getParent(itemId))); // Indexed (indexOfId) and Hierarchical (getParent)
+
+            rowData.put(GridState.JSONKEY_ROWDESCRIPTION, JsonCodec
+                    .encode(hierarchyData, null, HierarchyData.class,
                             getUI().getConnectorTracker()).getEncodedValue());
         }
 
@@ -171,32 +105,4 @@ public class TreeGrid extends Grid {
 
         }
     }
-
-    private class ItemVisibilityFilter implements Container.Filter {
-        @Override
-        public boolean passesFilter(Object itemId, Item item) throws UnsupportedOperationException {
-
-            // TODO: 14/08/16 root
-//            return getContainer().isRoot(itemId) || !getContainer().isCollapsed(getContainer().getParent(itemId));
-            boolean root = getContainer().getHierarchyData(itemId).getDepth() == 0;
-            boolean ancestorCollapsed = false;
-            Object parentId = itemId;
-            while ((parentId = getContainer().getParent(parentId, true)) != null && !ancestorCollapsed) {
-                if (getContainer().isCollapsed(parentId)) {
-                    ancestorCollapsed = true;
-                }
-            }
-
-            return root || !ancestorCollapsed;
-//            return getContainer().getHierarchyData(itemId).getDepth() == 0 ||
-//                    !getContainer().isCollapsed(getContainer().getParent(itemId, true));
-        }
-
-        @Override
-        public boolean appliesToProperty(Object propertyId) {
-            return false;
-        }
-    }
-
-    // TODO: 11/08/16 setCollapsed(itemId, boolean)
 }
