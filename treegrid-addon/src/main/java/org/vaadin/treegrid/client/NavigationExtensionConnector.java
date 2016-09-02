@@ -47,7 +47,7 @@ public class NavigationExtensionConnector extends AbstractExtensionConnector {
                                     if (!leaf) {
                                         if (expanded) {
                                             // Focus on next row
-                                            grid.setFocus(cell.getRowIndex() + 1, cell.getColumnIndex());
+                                            grid.focusCell(cell.getRowIndex() + 1, cell.getColumnIndex());
                                             // TODO: 03/08/16 how to handle different selection modes?
                                         } else {
                                             NodeExpansionRpc rpc = getRpcProxy(NodeExpansionRpc.class);
@@ -63,7 +63,7 @@ public class NavigationExtensionConnector extends AbstractExtensionConnector {
                                         rpc.toggleExpansion(getParent().getRowKey(cell.getRow()));
                                     } else if (depth > 0) {
                                         // jump to parent
-                                        grid.setFocus(parentIndex, cell.getColumnIndex());
+                                        grid.focusCell(parentIndex, cell.getColumnIndex());
                                         // TODO: 04/08/16
 //                                        cell.getGrid().scrollToRow(rowIndex);
                                     }

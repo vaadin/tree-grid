@@ -7,8 +7,10 @@ import org.vaadin.treegrid.TreeGrid;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.Title;
 import com.vaadin.annotations.VaadinServletConfiguration;
+import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
+import com.vaadin.ui.Grid;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 
@@ -31,6 +33,10 @@ public class DemoUI extends UI
 
         TreeGridContainerImpl container = new TreeGridContainerImpl();
         grid.setContainerDataSource(container);
+
+        grid.setSelectionMode(Grid.SelectionMode.MULTI);
+        grid.setColumnReorderingAllowed(true);
+        grid.setEditorEnabled(true);
 
         final VerticalLayout layout = new VerticalLayout();
         layout.setSizeFull();

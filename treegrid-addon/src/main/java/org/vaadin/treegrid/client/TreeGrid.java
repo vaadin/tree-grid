@@ -6,7 +6,9 @@ import elemental.json.JsonObject;
 
 public class TreeGrid extends Grid<JsonObject> {
 
-    void setFocus(int rowIndex, int columnIndex) {
-        focusCell(rowIndex, columnIndex);
+    /* Override to make package accessible */
+    @Override
+    protected void focusCell(int rowIndex, int columnIndex) {
+        super.focusCell(rowIndex, columnIndex);
     }
 }
