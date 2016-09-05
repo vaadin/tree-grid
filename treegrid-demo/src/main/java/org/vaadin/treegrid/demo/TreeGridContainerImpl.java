@@ -5,13 +5,15 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.vaadin.treegrid.TreeGridContainer;
+import org.vaadin.treegrid.container.Measurable;
 
 import com.vaadin.data.Collapsible;
+import com.vaadin.data.Container;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.HierarchicalContainer;
 
-public class TreeGridContainerImpl extends HierarchicalContainer implements TreeGridContainer, Collapsible {
+public class TreeGridContainerImpl extends HierarchicalContainer implements Collapsible, Container.Indexed,
+        Container.Hierarchical, Measurable {
 
     private static final String NAME_PROPERTY = "Name";
     private static final String HOURS_PROPERTY = "Hours done";

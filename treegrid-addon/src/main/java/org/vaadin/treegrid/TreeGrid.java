@@ -1,5 +1,8 @@
 package org.vaadin.treegrid;
 
+import org.vaadin.treegrid.container.IndexedHierarchical;
+import org.vaadin.treegrid.container.Measurable;
+
 import com.vaadin.data.Collapsible;
 import com.vaadin.data.Container;
 import com.vaadin.data.Item;
@@ -67,30 +70,59 @@ public class TreeGrid extends Grid {
         column.setRenderer(renderer);
     }
 
+    /* TreeGrid's data source implements both Indexed and Hierarchical hence this override is safe */
+    @Override
+    public IndexedHierarchical getContainerDataSource() {
+        return (IndexedHierarchical) super.getContainerDataSource();
+    }
+
     /**
      * Metadata generator for hierarchy information
      */
     private class HierarchyDataGenerator extends AbstractGridExtension implements DataGenerator {
         @Override
         public void generateData(Object itemId, Item item, JsonObject rowData) {
-
-            TreeGridContainer container = (TreeGridContainer) getContainerDataSource();
+            IndexedHierarchical container = getContainerDataSource();
 
             HierarchyData hierarchyData = new HierarchyData();
-            hierarchyData.setDepth(container.getDepth(itemId)); // ? TreeGridContainer
-            hierarchyData.setExpanded(!((Collapsible) container).isCollapsed(itemId));   // Collapsible
+
+            // calculate depth
+            int depth = 0;
+            if (container instanceof Measurable) {
+                depth = ((Measurable) container).getDepth(itemId);  // Measurable
+            } else {
+                Object id = itemId;
+                while (!container.isRoot(id)) {
+                    id = container.getParent(id);
+                    depth++;
+                }
+            }
+            hierarchyData.setDepth(depth);
+
+            // set collapsed state
+            if (container instanceof Collapsible) {
+                hierarchyData.setExpanded(!((Collapsible) container).isCollapsed(itemId));  // Collapsible
+            } else {
+                // TODO: 05/09/16 add default support for collapse if container doesn't support it?
+                hierarchyData.setExpanded(true);
+            }
+
+            // set leaf state
             hierarchyData.setLeaf(!container.hasChildren(itemId));  // Hierarchical
+
+            // set index of parent node
             hierarchyData.setParentIndex(container
                     .indexOfId(container.getParent(itemId))); // Indexed (indexOfId) and Hierarchical (getParent)
 
-            rowData.put(GridState.JSONKEY_ROWDESCRIPTION, JsonCodec
-                    .encode(hierarchyData, null, HierarchyData.class,
-                            getUI().getConnectorTracker()).getEncodedValue());
+            // add hierarchy information to row as metadata
+            rowData.put(GridState.JSONKEY_ROWDESCRIPTION,
+                    JsonCodec.encode(hierarchyData, null, HierarchyData.class, getUI().getConnectorTracker())
+                            .getEncodedValue());
         }
 
         @Override
         public void destroyData(Object itemId) {
-
+            // nothing to clean up
         }
     }
 }

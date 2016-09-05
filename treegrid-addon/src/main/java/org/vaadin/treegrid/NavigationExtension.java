@@ -1,6 +1,7 @@
 package org.vaadin.treegrid;
 
 import com.vaadin.ui.Grid;
+
 import org.vaadin.treegrid.client.NavigationExtensionConnector;
 
 public class NavigationExtension extends Grid.AbstractGridExtension {
@@ -12,7 +13,6 @@ public class NavigationExtension extends Grid.AbstractGridExtension {
             @Override
             public void toggleExpansion(String rowKey) {
                 Object itemId = getItemId(rowKey);
-//                grid.handleExpansion(itemId);
                 grid.toggleExpansion(itemId);
             }
         });
