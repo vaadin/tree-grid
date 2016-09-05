@@ -34,9 +34,26 @@ public class DemoUI extends UI
         TreeGridContainerImpl container = new TreeGridContainerImpl();
         grid.setContainerDataSource(container);
 
+        grid.setHierarchyColumn("Name");
+
         grid.setSelectionMode(Grid.SelectionMode.MULTI);
         grid.setColumnReorderingAllowed(true);
         grid.setEditorEnabled(true);
+
+//        grid.getEditorFieldGroup().addCommitHandler(
+//                new FieldGroup.CommitHandler() {
+//                    @Override
+//                    public void preCommit(FieldGroup.CommitEvent commitEvent) throws
+//                            FieldGroup.CommitException {
+//
+//                    }
+//
+//                    @Override
+//                    public void postCommit(FieldGroup.CommitEvent commitEvent) throws
+//                            FieldGroup.CommitException {
+//
+//                    }
+//                });
 
         final VerticalLayout layout = new VerticalLayout();
         layout.setSizeFull();
