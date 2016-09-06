@@ -8,18 +8,16 @@ import java.util.Map;
 import org.vaadin.treegrid.container.Measurable;
 
 import com.vaadin.data.Collapsible;
-import com.vaadin.data.Container;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.HierarchicalContainer;
 
-public class TreeGridContainerImpl extends HierarchicalContainer implements Collapsible, Container.Indexed,
-        Container.Hierarchical, Measurable {
+public class DemoContainer extends HierarchicalContainer implements Collapsible, Measurable {
 
     private static final String NAME_PROPERTY = "Name";
     private static final String HOURS_PROPERTY = "Hours done";
     private static final String MODIFIED_PROPERTY = "Last modified";
 
-    public TreeGridContainerImpl() {
+    public DemoContainer() {
         addContainerProperty(NAME_PROPERTY, String.class, "");
         addContainerProperty(HOURS_PROPERTY, Integer.class, 0);
         addContainerProperty(MODIFIED_PROPERTY, Date.class, new Date());

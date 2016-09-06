@@ -7,7 +7,6 @@ import org.vaadin.treegrid.TreeGrid;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.Title;
 import com.vaadin.annotations.VaadinServletConfiguration;
-import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.ui.Grid;
@@ -31,7 +30,7 @@ public class DemoUI extends UI
         final TreeGrid grid = new TreeGrid();
         grid.setWidth(600, Unit.PIXELS);
 
-        TreeGridContainerImpl container = new TreeGridContainerImpl();
+        DemoContainer container = new DemoContainer();
         grid.setContainerDataSource(container);
 
         grid.setHierarchyColumn("Name");
