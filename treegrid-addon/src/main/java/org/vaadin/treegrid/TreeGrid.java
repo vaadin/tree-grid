@@ -1,5 +1,6 @@
 package org.vaadin.treegrid;
 
+import org.vaadin.treegrid.container.IndexedContainerHierarchicalWrapper;
 import org.vaadin.treegrid.container.IndexedHierarchical;
 import org.vaadin.treegrid.container.Measurable;
 
@@ -14,6 +15,13 @@ import com.vaadin.ui.renderers.ClickableRenderer;
 
 import elemental.json.JsonObject;
 
+/**
+ * A grid component for displaying tabular hierarchical data.
+ * <p>
+ * Grid is always bound to a {@link com.vaadin.data.Container.Indexed} but is not a Container of any kind on itself.
+ * <p>
+ * For more information please see {@link Grid}'s documentation.
+ */
 public class TreeGrid extends Grid {
 
     private Column hierarchyColumn;
@@ -31,7 +39,7 @@ public class TreeGrid extends Grid {
     @Override
     public void setContainerDataSource(Container.Indexed container) {
         if (container != null && !(container instanceof Container.Hierarchical)) {
-            container = new ContainerHierarchicalIndexedWrapper(container);
+            container = new IndexedContainerHierarchicalWrapper(container);
         }
         super.setContainerDataSource(container);
     }

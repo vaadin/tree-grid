@@ -1,4 +1,4 @@
-package org.vaadin.treegrid;
+package org.vaadin.treegrid.container;
 
 import java.util.List;
 
@@ -6,12 +6,12 @@ import com.vaadin.data.Container;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.ContainerHierarchicalWrapper;
 
-public class ContainerHierarchicalIndexedWrapper extends
+public class IndexedContainerHierarchicalWrapper extends
         ContainerHierarchicalWrapper implements Container.Indexed {
 
     private Container.Indexed container;
     
-    public ContainerHierarchicalIndexedWrapper(
+    public IndexedContainerHierarchicalWrapper(
             Container.Indexed toBeWrapped) {
         super(toBeWrapped);
 
