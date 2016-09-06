@@ -1,7 +1,6 @@
 package org.vaadin.treegrid;
 
 import org.vaadin.treegrid.container.IndexedContainerHierarchicalWrapper;
-import org.vaadin.treegrid.container.IndexedHierarchical;
 import org.vaadin.treegrid.container.Measurable;
 
 import com.vaadin.data.Collapsible;
@@ -78,10 +77,16 @@ public class TreeGrid extends Grid {
         column.setRenderer(renderer);
     }
 
-    /* TreeGrid's data source implements both Indexed and Hierarchical hence this override is safe */
-    @Override
-    public IndexedHierarchical getContainerDataSource() {
-        return (IndexedHierarchical) super.getContainerDataSource();
+    /**
+     * Get container data source that implements {@link com.vaadin.data.Container.Indexed} and {@link
+     * com.vaadin.data.Container.Hierarchical} as well.
+     *
+     * @return TreeGrid's container data source
+     */
+    @SuppressWarnings("unchecked")
+    private <T extends Container.Indexed & Container.Hierarchical> T getContainer() {
+        // TreeGrid's data source has to implement both Indexed and Hierarchical so it is safe to cast.
+        return (T) super.getContainerDataSource();
     }
 
     /**
@@ -90,37 +95,37 @@ public class TreeGrid extends Grid {
     private class HierarchyDataGenerator extends AbstractGridExtension implements DataGenerator {
         @Override
         public void generateData(Object itemId, Item item, JsonObject rowData) {
-            IndexedHierarchical container = getContainerDataSource();
+//            Container.Indexed container = getContainerDataSource();
 
             HierarchyData hierarchyData = new HierarchyData();
 
             // calculate depth
             int depth = 0;
-            if (container instanceof Measurable) {
-                depth = ((Measurable) container).getDepth(itemId);  // Measurable
+            if (getContainer() instanceof Measurable) {
+                depth = ((Measurable) getContainer()).getDepth(itemId);  // Measurable
             } else {
                 Object id = itemId;
-                while (!container.isRoot(id)) {
-                    id = container.getParent(id);
+                while (!getContainer().isRoot(id)) {
+                    id = getContainer().getParent(id);
                     depth++;
                 }
             }
             hierarchyData.setDepth(depth);
 
             // set collapsed state
-            if (container instanceof Collapsible) {
-                hierarchyData.setExpanded(!((Collapsible) container).isCollapsed(itemId));  // Collapsible
+            if (getContainer() instanceof Collapsible) {
+                hierarchyData.setExpanded(!((Collapsible) getContainer()).isCollapsed(itemId));  // Collapsible
             } else {
                 // TODO: 05/09/16 add default support for collapse if container doesn't support it?
                 hierarchyData.setExpanded(true);
             }
 
             // set leaf state
-            hierarchyData.setLeaf(!container.hasChildren(itemId));  // Hierarchical
+            hierarchyData.setLeaf(!getContainer().hasChildren(itemId));  // Hierarchical
 
             // set index of parent node
-            hierarchyData.setParentIndex(container
-                    .indexOfId(container.getParent(itemId))); // Indexed (indexOfId) and Hierarchical (getParent)
+            hierarchyData.setParentIndex(getContainer()
+                    .indexOfId(getContainer().getParent(itemId))); // Indexed (indexOfId) and Hierarchical (getParent)
 
             // add hierarchy information to row as metadata
             rowData.put(GridState.JSONKEY_ROWDESCRIPTION,
