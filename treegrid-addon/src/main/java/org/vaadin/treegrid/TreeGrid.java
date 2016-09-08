@@ -51,13 +51,11 @@ public class TreeGrid extends Grid {
     }
 
     void toggleExpansion(Object itemId) {
-        // TODO: 05/09/16 Use strategy?
+        // TODO: 08/09/16 Possibly add default support for collapse if container does not implement Collapsible
         if (getContainerDataSource() instanceof Collapsible) {
             Collapsible container = (Collapsible) getContainerDataSource();
             container.setCollapsed(itemId, !container.isCollapsed(itemId)); // Collapsible
         }
-
-        // TODO: 01/09/16 Is additional support needed for collapsed item visibility?
     }
 
     private void setHierarchyRenderer(Column column) {
@@ -114,10 +112,10 @@ public class TreeGrid extends Grid {
 
             // set collapsed state
             if (getContainer() instanceof Collapsible) {
-                hierarchyData.setExpanded(!((Collapsible) getContainer()).isCollapsed(itemId));  // Collapsible
+                hierarchyData.setCollapsed(((Collapsible) getContainer()).isCollapsed(itemId));  // Collapsible
             } else {
                 // TODO: 05/09/16 add default support for collapse if container doesn't support it?
-                hierarchyData.setExpanded(true);
+                hierarchyData.setCollapsed(false);
             }
 
             // set leaf state

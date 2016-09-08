@@ -28,13 +28,13 @@ public class NavigationExtensionConnector extends AbstractExtensionConnector {
                     if (isHierarchyColumn(cell) && (event.getKeyCode() == KeyCodes.KEY_LEFT
                             || event.getKeyCode() == KeyCodes.KEY_RIGHT)) {
 
-                        boolean expanded = false;
-                        boolean leaf = false;
+                        boolean collapsed;
+                        boolean leaf;
                         int depth;
                         int parentIndex;
                         if (cell.getRow().hasKey(GridState.JSONKEY_ROWDESCRIPTION)) {
                             JsonObject rowDescription = cell.getRow().getObject(GridState.JSONKEY_ROWDESCRIPTION);
-                            expanded = rowDescription.getBoolean("expanded");
+                            collapsed = rowDescription.getBoolean("collapsed");
                             leaf = rowDescription.getBoolean("leaf");
                             depth = (int) rowDescription.getNumber("depth");
                             parentIndex = (int) rowDescription.getNumber("parentIndex");
@@ -42,21 +42,21 @@ public class NavigationExtensionConnector extends AbstractExtensionConnector {
                             switch (event.getKeyCode()) {
                             case KeyCodes.KEY_RIGHT:
                                 if (!leaf) {
-                                    if (expanded) {
+                                    if (collapsed) {
+                                        NodeCollapseRpc rpc = getRpcProxy(NodeCollapseRpc.class);
+                                        String rowKey = getParent().getRowKey(cell.getRow());
+                                        rpc.toggleCollapse(rowKey);
+                                    } else {
                                         // Focus on next row
                                         grid.focusCell(cell.getRowIndex() + 1, cell.getColumnIndex());
-                                    } else {
-                                        NodeExpansionRpc rpc = getRpcProxy(NodeExpansionRpc.class);
-                                        String rowKey = getParent().getRowKey(cell.getRow());
-                                        rpc.toggleExpansion(rowKey);
                                     }
                                 }
                                 break;
                             case KeyCodes.KEY_LEFT:
-                                if (expanded) {
+                                if (!collapsed) {
                                     // collapse node
-                                    NodeExpansionRpc rpc = getRpcProxy(NodeExpansionRpc.class);
-                                    rpc.toggleExpansion(getParent().getRowKey(cell.getRow()));
+                                    NodeCollapseRpc rpc = getRpcProxy(NodeCollapseRpc.class);
+                                    rpc.toggleCollapse(getParent().getRowKey(cell.getRow()));
                                 } else if (depth > 0) {
                                     // jump to parent
                                     grid.focusCell(parentIndex, cell.getColumnIndex());
@@ -81,7 +81,7 @@ public class NavigationExtensionConnector extends AbstractExtensionConnector {
         return (TreeGridConnector) super.getParent();
     }
 
-    public interface NodeExpansionRpc extends ServerRpc {
-        void toggleExpansion(String rowKey);
+    public interface NodeCollapseRpc extends ServerRpc {
+        void toggleCollapse(String rowKey);
     }
 }

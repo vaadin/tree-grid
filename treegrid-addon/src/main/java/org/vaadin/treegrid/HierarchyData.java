@@ -1,18 +1,10 @@
 package org.vaadin.treegrid;
 
-import java.util.HashSet;
-import java.util.Set;
-
 public class HierarchyData {
     private int depth;
-    private boolean expanded;
+    private boolean collapsed;
     private boolean leaf = true;
-    @Deprecated
-    private boolean visible;
     private int parentIndex;
-
-    // TODO: 28/07/16 reference to children
-    private Set<HierarchyData> children = new HashSet<>();
 
     public int getDepth() {
         return depth;
@@ -22,12 +14,12 @@ public class HierarchyData {
         this.depth = depth;
     }
 
-    public boolean isExpanded() {
-        return expanded;
+    public boolean isCollapsed() {
+        return collapsed;
     }
 
-    public void setExpanded(boolean expanded) {
-        this.expanded = expanded;
+    public void setCollapsed(boolean collapsed) {
+        this.collapsed = collapsed;
     }
 
     public boolean isLeaf() {
@@ -36,18 +28,6 @@ public class HierarchyData {
 
     public void setLeaf(boolean leaf) {
         this.leaf = leaf;
-    }
-
-    public Set<HierarchyData> getChildren() {
-        return children;
-    }
-
-    public boolean isVisible() {
-        return visible;
-    }
-
-    public void setVisible(boolean visible) {
-        this.visible = visible;
     }
 
     public int getParentIndex() {

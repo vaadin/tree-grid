@@ -42,7 +42,7 @@ $darkgreen: darken($green, 30%);
 	$tree-spacer-padding: 10px;
 	$indent: $tree-spacer-width + $tree-spacer-padding;
 
-	.v-tree-grid-expand-button {
+	.v-tree-grid-expander {
 		display: inline-block;
 		width: 10px;
 		padding-right: 10px;

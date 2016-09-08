@@ -12968,23 +12968,23 @@ div.v-layout.v-horizontal.v-widget {
 	overflow: hidden;
 }
 
-.demo .v-tree-grid-expand-button {
+.demo .v-tree-grid-expander {
 	display: inline-block;
 	width: 10px;
 	padding-right: 10px;
 }
 
-.demo .v-tree-grid-expand-button::before {
+.demo .v-tree-grid-expander::before {
 	display: inline-block;
 	padding-right: 4px;
 	font-family: FontAwesome;
 }
 
-.demo .v-tree-grid-expand-button.expanded::before {
+.demo .v-tree-grid-expander.expanded::before {
 	content: "\f0d7";
 }
 
-.demo .v-tree-grid-expand-button.collapsed::before {
+.demo .v-tree-grid-expander.collapsed::before {
 	content: "\f0da";
 }
 

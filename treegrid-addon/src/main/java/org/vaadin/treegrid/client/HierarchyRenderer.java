@@ -18,7 +18,7 @@ public class HierarchyRenderer extends ClickableRenderer<String, Widget> {
 
     private static final String CLASS_TREE_GRID_NODE = "v-tree-grid-node";
     private static final String CLASS_TREE_GRID_CELL_CONTENT = "v-tree-grid-cell-content";
-    private static final String CLASS_TREE_GRID_EXPAND_BUTTON = "v-tree-grid-expand-button";
+    private static final String CLASS_TREE_GRID_EXPANDER = "v-tree-grid-expander";
     private static final String CLASS_COLLAPSED = "collapsed";
     private static final String CLASS_EXPANDED = "expanded";
 
@@ -29,8 +29,6 @@ public class HierarchyRenderer extends ClickableRenderer<String, Widget> {
         return new HierarchyItem(CLASS_TREE_GRID_NODE);
     }
 
-
-
     @Override
     public void render(RendererCellReference cell, String data,
             Widget widget) {
@@ -39,15 +37,13 @@ public class HierarchyRenderer extends ClickableRenderer<String, Widget> {
 
         int depth = 0;
         boolean leaf = false;
-        boolean expanded = false;
-        boolean visible = false;
+        boolean collapsed = false;
         if (row.hasKey(GridState.JSONKEY_ROWDESCRIPTION)) {
             JsonObject rowDescription = row.getObject(GridState.JSONKEY_ROWDESCRIPTION);
 
             depth = (int) rowDescription.getNumber("depth");
             leaf = rowDescription.getBoolean("leaf");
-            expanded = rowDescription.getBoolean("expanded");
-            visible = rowDescription.getBoolean("visible");
+            collapsed = rowDescription.getBoolean("collapsed");
         }
 
 
@@ -58,10 +54,10 @@ public class HierarchyRenderer extends ClickableRenderer<String, Widget> {
 
         if (leaf) {
             cellWidget.setExpanderState(ExpanderState.LEAF);
-        } else if (expanded) {
-            cellWidget.setExpanderState(ExpanderState.EXPANDED);
-        } else {
+        } else if (collapsed){
             cellWidget.setExpanderState(ExpanderState.COLLAPSED);
+        } else {
+            cellWidget.setExpanderState(ExpanderState.EXPANDED);
         }
     }
 
@@ -76,7 +72,7 @@ public class HierarchyRenderer extends ClickableRenderer<String, Widget> {
             panel.getElement().addClassName(className);
 
             expander = new Expander();
-            expander.getElement().addClassName(CLASS_TREE_GRID_EXPAND_BUTTON);
+            expander.getElement().addClassName(CLASS_TREE_GRID_EXPANDER);
 
             content = GWT.create(HTML.class);
             content.getElement().addClassName(CLASS_TREE_GRID_CELL_CONTENT);
@@ -92,8 +88,8 @@ public class HierarchyRenderer extends ClickableRenderer<String, Widget> {
         }
 
         private void setDepth(int depth) {
+            // TODO: 08/09/16 Change indentation to accept arbitrary depth
             // indentation
-            // TODO: 01/08/16 Is this method for removing old indentation effective?
             for (int i = 0; i < 4; i++) {
                 panel.getElement().removeClassName(CLASS_DEPTH + i);
             }
