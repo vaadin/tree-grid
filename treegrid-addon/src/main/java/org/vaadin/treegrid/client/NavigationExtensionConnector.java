@@ -24,12 +24,9 @@ public class NavigationExtensionConnector extends AbstractExtensionConnector {
         grid.addBrowserEventHandler(6, new BrowserEventHandler<JsonObject>() {
             @Override
             public boolean onEvent(Event event, EventCellReference<JsonObject> cell) {
-//                if (true) {
-//                    return false;
-//                }
                 if (event.getType().equals(BrowserEvents.KEYDOWN)) {
-                    if (isHierarchyColumn(cell) &&
-                            (event.getKeyCode() == KeyCodes.KEY_LEFT || event.getKeyCode() == KeyCodes.KEY_RIGHT)) {
+                    if (isHierarchyColumn(cell) && (event.getKeyCode() == KeyCodes.KEY_LEFT
+                            || event.getKeyCode() == KeyCodes.KEY_RIGHT)) {
 
                         boolean expanded = false;
                         boolean leaf = false;
@@ -43,31 +40,28 @@ public class NavigationExtensionConnector extends AbstractExtensionConnector {
                             parentIndex = (int) rowDescription.getNumber("parentIndex");
 
                             switch (event.getKeyCode()) {
-                                case KeyCodes.KEY_RIGHT:
-                                    if (!leaf) {
-                                        if (expanded) {
-                                            // Focus on next row
-                                            grid.focusCell(cell.getRowIndex() + 1, cell.getColumnIndex());
-                                            // TODO: 03/08/16 how to handle different selection modes?
-                                        } else {
-                                            NodeExpansionRpc rpc = getRpcProxy(NodeExpansionRpc.class);
-                                            String rowKey = getParent().getRowKey(cell.getRow());
-                                            rpc.toggleExpansion(rowKey);
-                                        }
-                                    }
-                                    break;
-                                case KeyCodes.KEY_LEFT:
+                            case KeyCodes.KEY_RIGHT:
+                                if (!leaf) {
                                     if (expanded) {
-                                        // collapse node
+                                        // Focus on next row
+                                        grid.focusCell(cell.getRowIndex() + 1, cell.getColumnIndex());
+                                    } else {
                                         NodeExpansionRpc rpc = getRpcProxy(NodeExpansionRpc.class);
-                                        rpc.toggleExpansion(getParent().getRowKey(cell.getRow()));
-                                    } else if (depth > 0) {
-                                        // jump to parent
-                                        grid.focusCell(parentIndex, cell.getColumnIndex());
-                                        // TODO: 04/08/16
-//                                        cell.getGrid().scrollToRow(rowIndex);
+                                        String rowKey = getParent().getRowKey(cell.getRow());
+                                        rpc.toggleExpansion(rowKey);
                                     }
-                                    break;
+                                }
+                                break;
+                            case KeyCodes.KEY_LEFT:
+                                if (expanded) {
+                                    // collapse node
+                                    NodeExpansionRpc rpc = getRpcProxy(NodeExpansionRpc.class);
+                                    rpc.toggleExpansion(getParent().getRowKey(cell.getRow()));
+                                } else if (depth > 0) {
+                                    // jump to parent
+                                    grid.focusCell(parentIndex, cell.getColumnIndex());
+                                }
+                                break;
                             }
                         }
                         return true;

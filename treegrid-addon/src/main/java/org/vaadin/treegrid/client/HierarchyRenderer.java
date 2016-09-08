@@ -26,10 +26,6 @@ public class HierarchyRenderer extends ClickableRenderer<String, Widget> {
 
     @Override
     public Widget createWidget() {
-//        HTML html = GWT.create(HTML.class);
-//        html.addClickHandler(this);
-//        return html;
-
         return new HierarchyItem(CLASS_TREE_GRID_NODE);
     }
 
