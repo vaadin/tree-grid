@@ -21,7 +21,6 @@ public class HierarchyRenderer extends ClickableRenderer<String, Widget> {
     private static final String CLASS_TREE_GRID_EXPANDER = "v-tree-grid-expander";
     private static final String CLASS_COLLAPSED = "collapsed";
     private static final String CLASS_EXPANDED = "expanded";
-
     private static final String CLASS_DEPTH = "depth-";
 
     @Override
@@ -46,15 +45,13 @@ public class HierarchyRenderer extends ClickableRenderer<String, Widget> {
             collapsed = rowDescription.getBoolean("collapsed");
         }
 
-
-
         HierarchyItem cellWidget = (HierarchyItem) widget;
         cellWidget.setText(data);
         cellWidget.setDepth(depth);
 
         if (leaf) {
             cellWidget.setExpanderState(ExpanderState.LEAF);
-        } else if (collapsed){
+        } else if (collapsed) {
             cellWidget.setExpanderState(ExpanderState.COLLAPSED);
         } else {
             cellWidget.setExpanderState(ExpanderState.EXPANDED);
@@ -88,12 +85,24 @@ public class HierarchyRenderer extends ClickableRenderer<String, Widget> {
         }
 
         private void setDepth(int depth) {
-            // TODO: 08/09/16 Change indentation to accept arbitrary depth
-            // indentation
-            for (int i = 0; i < 4; i++) {
-                panel.getElement().removeClassName(CLASS_DEPTH + i);
+            String classNameToBeReplaced = getFullClassName(CLASS_DEPTH, panel.getElement().getClassName());
+            if (classNameToBeReplaced == null) {
+                panel.getElement().addClassName(CLASS_DEPTH + depth);
+            } else {
+                panel.getElement().replaceClassName(classNameToBeReplaced, CLASS_DEPTH + depth);
             }
-            panel.getElement().addClassName(CLASS_DEPTH + depth);
+        }
+
+        private String getFullClassName(String prefix, String classNameList) {
+            int start = classNameList.indexOf(prefix);
+            int end = start + prefix.length();
+            if (start > -1) {
+                while (end < classNameList.length() && classNameList.charAt(end) != ' ') {
+                    end++;
+                }
+                return classNameList.substring(start, end);
+            }
+            return null;
         }
 
         private void setExpanderState(ExpanderState state) {
