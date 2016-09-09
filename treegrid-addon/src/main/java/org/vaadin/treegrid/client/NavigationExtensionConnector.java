@@ -25,13 +25,14 @@ public class NavigationExtensionConnector extends AbstractExtensionConnector {
             @Override
             public boolean onEvent(Event event, EventCellReference<JsonObject> cell) {
                 if (event.getType().equals(BrowserEvents.KEYDOWN)) {
-                    if (isHierarchyColumn(cell) && (event.getKeyCode() == KeyCodes.KEY_LEFT
+
+                    // Navigate within hierarchy with ALT/OPTION + ARROW KEY when hierarchy column is selected
+                    if (isHierarchyColumn(cell) && event.getAltKey() && (event.getKeyCode() == KeyCodes.KEY_LEFT
                             || event.getKeyCode() == KeyCodes.KEY_RIGHT)) {
 
-                        boolean collapsed;
-                        boolean leaf;
-                        int depth;
-                        int parentIndex;
+                        // Hierarchy metadata
+                        boolean collapsed, leaf;
+                        int depth, parentIndex;
                         if (cell.getRow().hasKey(GridState.JSONKEY_ROWDESCRIPTION)) {
                             JsonObject rowDescription = cell.getRow().getObject(GridState.JSONKEY_ROWDESCRIPTION);
                             collapsed = rowDescription.getBoolean("collapsed");
