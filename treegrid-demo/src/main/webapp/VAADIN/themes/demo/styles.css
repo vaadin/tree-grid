@@ -13000,6 +13000,58 @@ div.v-layout.v-horizontal.v-widget {
 	padding-left: 40px;
 }
 
+.demo .v-tree-grid-node.depth-3 {
+	padding-left: 60px;
+}
+
+.demo .v-tree-grid-node.depth-4 {
+	padding-left: 80px;
+}
+
+.demo .v-tree-grid-node.depth-5 {
+	padding-left: 100px;
+}
+
+.demo .v-tree-grid-node.depth-6 {
+	padding-left: 120px;
+}
+
+.demo .v-tree-grid-node.depth-7 {
+	padding-left: 140px;
+}
+
+.demo .v-tree-grid-node.depth-8 {
+	padding-left: 160px;
+}
+
+.demo .v-tree-grid-node.depth-9 {
+	padding-left: 180px;
+}
+
+.demo .v-tree-grid-node.depth-10 {
+	padding-left: 200px;
+}
+
+.demo .v-tree-grid-node.depth-11 {
+	padding-left: 220px;
+}
+
+.demo .v-tree-grid-node.depth-12 {
+	padding-left: 240px;
+}
+
+.demo .v-tree-grid-node.depth-13 {
+	padding-left: 260px;
+}
+
+.demo .v-tree-grid-node.depth-14 {
+	padding-left: 280px;
+}
+
+.demo .v-tree-grid-node.depth-15 {
+	padding-left: 300px;
+}
+
 .demo .v-tree-grid-node .v-tree-grid-cell-content {
 	display: inline-block;
 }

@@ -10,6 +10,8 @@ $tree-spacer-width: 10px;
 $tree-spacer-padding: 10px;
 $indent: $tree-spacer-width + $tree-spacer-padding;
 
+$class-depth: depth !default
+
 .v-tree-grid-expander {
   display: inline-block;
   width: 10px;
@@ -35,15 +37,9 @@ $indent: $tree-spacer-width + $tree-spacer-padding;
 }
 
 .v-tree-grid-node {
-  &.depth-0 {
-    padding-left: $indent * 0;
-  }
-
-  &.depth-1 {
-    padding-left: $indent * 1;
-  }
-
-  &.depth-2 {
-    padding-left: $indent * 2;
+  @for $i from 0 through 15 {
+    &.#{$class-depth}-#{$i} {
+      padding-left: $indent * $i;
+    }
   }
 }
