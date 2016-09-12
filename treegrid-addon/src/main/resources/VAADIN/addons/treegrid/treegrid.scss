@@ -1,0 +1,50 @@
+@mixin treegrid {
+
+  // Expander with and item indentation constants
+  $tree-spacer-width: 10px;
+  $tree-spacer-padding: 10px;
+  $indent: $tree-spacer-width + $tree-spacer-padding;
+
+  // Classname for depth styling
+  $class-depth: depth !default;
+
+  .v-tree-grid-expander {
+    display: inline-block;
+    width: 10px;
+    padding-right: 10px;
+
+    &::before {
+      display: inline-block;
+      padding-right: 4px;
+      font-family: FontAwesome;
+    }
+
+    // Expander for expanded item
+    &.expanded {
+      &::before {
+        content: '\f0d7';
+      }
+    }
+
+    // Expander for collapsed item
+    &.collapsed {
+      &::before {
+        content: '\f0da';
+      }
+    }
+  }
+
+  // Hierarchy depth styling
+  .v-tree-grid-node {
+    @for $i from 0 through 15 {
+      &.#{$class-depth}-#{$i} {
+        padding-left: $indent * $i;
+      }
+    }
+  }
+
+  // Expander and cell content in same line
+  .v-tree-grid-cell-content {
+    display: inline-block;
+  }
+}

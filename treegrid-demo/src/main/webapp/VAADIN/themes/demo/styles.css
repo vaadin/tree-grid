@@ -12968,6 +12968,14 @@ div.v-layout.v-horizontal.v-widget {
 	overflow: hidden;
 }
 
+.demo div.treegrid {
+	cursor: pointer;
+	user-select: none;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+}
+
 .demo .v-tree-grid-expander {
 	display: inline-block;
 	width: 10px;
@@ -13052,6 +13060,6 @@ div.v-layout.v-horizontal.v-widget {
 	padding-left: 300px;
 }
 
-.demo .v-tree-grid-node .v-tree-grid-cell-content {
+.demo .v-tree-grid-cell-content {
 	display: inline-block;
 }
