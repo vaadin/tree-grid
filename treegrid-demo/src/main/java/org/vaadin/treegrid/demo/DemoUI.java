@@ -33,7 +33,7 @@ public class DemoUI extends UI
         DemoContainer container = new DemoContainer();
         grid.setContainerDataSource(container);
 
-        grid.setHierarchyColumn("Name");
+        grid.setHierarchyColumn(DemoContainer.NAME_PROPERTY);
 
         grid.setSelectionMode(Grid.SelectionMode.MULTI);
         grid.setColumnReorderingAllowed(true);

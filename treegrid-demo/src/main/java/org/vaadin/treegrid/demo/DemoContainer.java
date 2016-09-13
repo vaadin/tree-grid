@@ -13,9 +13,9 @@ import com.vaadin.data.util.HierarchicalContainer;
 
 public class DemoContainer extends HierarchicalContainer implements Collapsible, Measurable {
 
-    private static final String NAME_PROPERTY = "Name";
-    private static final String HOURS_PROPERTY = "Hours done";
-    private static final String MODIFIED_PROPERTY = "Last modified";
+    static final String NAME_PROPERTY = "Name";
+    static final String HOURS_PROPERTY = "Hours done";
+    static final String MODIFIED_PROPERTY = "Last modified";
 
     public DemoContainer() {
         addContainerProperty(NAME_PROPERTY, String.class, "");
