@@ -1,9 +1,9 @@
 @mixin treegrid {
 
   // Expander with and item indentation constants
-  $tree-spacer-width: 10px;
-  $tree-spacer-padding: 10px;
-  $indent: $tree-spacer-width + $tree-spacer-padding;
+  $expander-width: 10px;
+  $expander-padding: 10px;
+  $indent: $expander-width + $expander-padding;
 
   // Classname for depth styling
   $class-depth: depth !default;
