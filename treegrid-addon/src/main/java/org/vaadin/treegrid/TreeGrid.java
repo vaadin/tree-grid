@@ -1,5 +1,6 @@
 package org.vaadin.treegrid;
 
+import org.vaadin.treegrid.container.ContainerCollapsibleWrapper;
 import org.vaadin.treegrid.container.IndexedContainerHierarchicalWrapper;
 import org.vaadin.treegrid.container.Measurable;
 
@@ -37,8 +38,14 @@ public class TreeGrid extends Grid {
 
     @Override
     public void setContainerDataSource(Container.Indexed container) {
-        if (container != null && !(container instanceof Container.Hierarchical)) {
-            container = new IndexedContainerHierarchicalWrapper(container);
+        if (container != null) {
+            if (!(container instanceof Container.Hierarchical)) {
+                container = new IndexedContainerHierarchicalWrapper(container);
+            }
+
+            if (!(container instanceof Collapsible)) {
+                container = new ContainerCollapsibleWrapper(container);
+            }
         }
         super.setContainerDataSource(container);
     }
