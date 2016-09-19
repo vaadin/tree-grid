@@ -1,20 +1,24 @@
 package org.vaadin.treegrid.client;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.HasClickHandlers;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
 import com.vaadin.client.renderers.ClickableRenderer;
+import com.vaadin.client.renderers.Renderer;
+import com.vaadin.client.renderers.WidgetRenderer;
 import com.vaadin.client.widget.grid.RendererCellReference;
 import com.vaadin.shared.ui.grid.GridState;
 
 import elemental.json.JsonObject;
 
-public class HierarchyRenderer extends ClickableRenderer<String, Widget> {
+public class HierarchyRenderer extends ClickableRenderer<Object, Widget> {
 
     private static final String CLASS_TREE_GRID_NODE = "v-tree-grid-node";
     private static final String CLASS_TREE_GRID_CELL_CONTENT = "v-tree-grid-cell-content";
@@ -23,14 +27,15 @@ public class HierarchyRenderer extends ClickableRenderer<String, Widget> {
     private static final String CLASS_EXPANDED = "expanded";
     private static final String CLASS_DEPTH = "depth-";
 
+    private Renderer innerRenderer;
+
     @Override
     public Widget createWidget() {
         return new HierarchyItem(CLASS_TREE_GRID_NODE);
     }
 
     @Override
-    public void render(RendererCellReference cell, String data,
-            Widget widget) {
+    public void render(RendererCellReference cell, Object data, Widget widget) {
 
         JsonObject row = (JsonObject) cell.getRow();
 
@@ -46,7 +51,6 @@ public class HierarchyRenderer extends ClickableRenderer<String, Widget> {
         }
 
         HierarchyItem cellWidget = (HierarchyItem) widget;
-        cellWidget.setText(data);
         cellWidget.setDepth(depth);
 
         if (leaf) {
@@ -56,13 +60,25 @@ public class HierarchyRenderer extends ClickableRenderer<String, Widget> {
         } else {
             cellWidget.setExpanderState(ExpanderState.EXPANDED);
         }
+
+        // inner cell
+        if (innerRenderer instanceof WidgetRenderer) {
+            ((WidgetRenderer) innerRenderer).render(cell, data, ((HierarchyItem) widget).content);
+        } else {
+            innerRenderer.render(new HierarchyRendererCellReferenceWrapper(cell,
+                    ((HierarchyItem) widget).content.getElement()), data);
+        }
+    }
+
+    void setInnerRenderer(Renderer innerRenderer) {
+        this.innerRenderer = innerRenderer;
     }
 
     private class HierarchyItem extends Composite {
 
         private FlowPanel panel;
         private Expander expander;
-        private HTML content;
+        private Widget content;
 
         private HierarchyItem(String className) {
             panel = new FlowPanel();
@@ -71,17 +87,21 @@ public class HierarchyRenderer extends ClickableRenderer<String, Widget> {
             expander = new Expander();
             expander.getElement().addClassName(CLASS_TREE_GRID_EXPANDER);
 
-            content = GWT.create(HTML.class);
+            if (innerRenderer instanceof WidgetRenderer) {
+                content = ((WidgetRenderer) innerRenderer).createWidget();
+            } else {
+                // TODO: 20/09/16 create more general widget?
+                content = new HTML();
+            }
+
             content.getElement().addClassName(CLASS_TREE_GRID_CELL_CONTENT);
 
             panel.add(expander);
             panel.add(content);
 
-            initWidget(panel);
-        }
+            expander.addClickHandler(HierarchyRenderer.this);
 
-        private void setText(String text) {
-            this.content.setText(text);
+            initWidget(panel);
         }
 
         private void setDepth(int depth) {
@@ -122,13 +142,16 @@ public class HierarchyRenderer extends ClickableRenderer<String, Widget> {
             }
         }
 
-        private class Expander extends Widget {
+        private class Expander extends Widget implements HasClickHandlers {
 
             private Expander() {
                 Element span = DOM.createSpan();
                 setElement(span);
+            }
 
-                addDomHandler(HierarchyRenderer.this, ClickEvent.getType());
+            @Override
+            public HandlerRegistration addClickHandler(ClickHandler handler) {
+                return addDomHandler(handler, ClickEvent.getType());
             }
         }
     }

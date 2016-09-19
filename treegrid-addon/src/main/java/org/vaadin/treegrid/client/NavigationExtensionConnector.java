@@ -77,6 +77,10 @@ public class NavigationExtensionConnector extends AbstractExtensionConnector {
         return cell.getColumn().getRenderer() instanceof HierarchyRenderer;
     }
 
+    void toggleCollapse(String rowKey) {
+        getRpcProxy(NodeCollapseRpc.class).toggleCollapse(rowKey);
+    }
+
     @Override
     public TreeGridConnector getParent() {
         return (TreeGridConnector) super.getParent();

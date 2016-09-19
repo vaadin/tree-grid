@@ -33,26 +33,9 @@ public class DemoUI extends UI
         DemoContainer container = new DemoContainer();
         grid.setContainerDataSource(container);
 
-        grid.setHierarchyColumn(DemoContainer.NAME_PROPERTY);
-
         grid.setSelectionMode(Grid.SelectionMode.MULTI);
         grid.setColumnReorderingAllowed(true);
         grid.setEditorEnabled(true);
-
-//        grid.getEditorFieldGroup().addCommitHandler(
-//                new FieldGroup.CommitHandler() {
-//                    @Override
-//                    public void preCommit(FieldGroup.CommitEvent commitEvent) throws
-//                            FieldGroup.CommitException {
-//
-//                    }
-//
-//                    @Override
-//                    public void postCommit(FieldGroup.CommitEvent commitEvent) throws
-//                            FieldGroup.CommitException {
-//
-//                    }
-//                });
 
         final VerticalLayout layout = new VerticalLayout();
         layout.setSizeFull();

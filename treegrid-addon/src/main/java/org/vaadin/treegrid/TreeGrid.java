@@ -11,7 +11,6 @@ import com.vaadin.server.JsonCodec;
 import com.vaadin.server.communication.data.DataGenerator;
 import com.vaadin.shared.ui.grid.GridState;
 import com.vaadin.ui.Grid;
-import com.vaadin.ui.renderers.ClickableRenderer;
 
 import elemental.json.JsonObject;
 
@@ -50,35 +49,11 @@ public class TreeGrid extends Grid {
         super.setContainerDataSource(container);
     }
 
-    public void setHierarchyColumn(Object propertyId) {
-        hierarchyColumn = getColumn(propertyId);
-
-        // TODO: 31/08/16 implement composite, possibly not including server side renderer
-        setHierarchyRenderer(hierarchyColumn);
-    }
-
     void toggleExpansion(Object itemId) {
         if (getContainerDataSource() instanceof Collapsible) {
             Collapsible container = (Collapsible) getContainerDataSource();
             container.setCollapsed(itemId, !container.isCollapsed(itemId)); // Collapsible
         }
-    }
-
-    private void setHierarchyRenderer(Column column) {
-        // Instantiate hierarchy renderer
-        HierarchyRenderer renderer = new HierarchyRenderer(String.class);
-
-        // Listen to click events
-        renderer.addClickListener(new ClickableRenderer.RendererClickListener() {
-            @Override
-            public void click(ClickableRenderer.RendererClickEvent rendererClickEvent) {
-                // handle hierarchy click events
-                Object itemId = rendererClickEvent.getItemId();
-                toggleExpansion(itemId);
-            }
-        });
-
-        column.setRenderer(renderer);
     }
 
     /**
