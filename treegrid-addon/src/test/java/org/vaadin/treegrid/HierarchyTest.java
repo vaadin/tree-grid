@@ -39,8 +39,6 @@ public class HierarchyTest {
         grid.setContainerDataSource(container);
 
         populateContainer((Container.Hierarchical) grid.getContainerDataSource());
-
-        Assert.assertEquals("Container should have 9 items", 9, grid.getContainerDataSource().size());
     }
 
     @Test
