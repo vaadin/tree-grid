@@ -1,7 +1,7 @@
 From 52636b116562446883626e2e577ae69a381349e3 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Johannes=20Dahlstr=C3=B6m?= <johannesd@vaadin.com>
 Date: Tue, 2 Aug 2016 12:07:22 +0300
-Subject: [PATCH 1/4] Start client-side Grid DOM event handling refactor
+Subject: [PATCH 1/5] Start client-side Grid DOM event handling refactor
 
 Change-Id: I5309cb6e5792d4f26bcf47d598ad73faac36132a
 ---
@@ -98,7 +98,7 @@ index 7e5838b..4722267 100644
 From cfe7c9e252e080fc8d9ab86d6b162959e9b680e1 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Johannes=20Dahlstr=C3=B6m?= <johannesd@vaadin.com>
 Date: Tue, 2 Aug 2016 12:46:50 +0300
-Subject: [PATCH 2/4] Refactor Grid event handling methods to instances of a
+Subject: [PATCH 2/5] Refactor Grid event handling methods to instances of a
  handler interface
 
 Change-Id: I922ea1d722d5f5fc742cc981ca997e96c1f48b38
@@ -533,7 +533,7 @@ index 4722267..5eb1b55 100644
 From 6ea64f9cf08eafb53bfbcab72bc2097ed77cc1a6 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Johannes=20Dahlstr=C3=B6m?= <johannesd@vaadin.com>
 Date: Tue, 2 Aug 2016 14:19:14 +0300
-Subject: [PATCH 3/4] Move Grid event handlers to a list, add method to add
+Subject: [PATCH 3/5] Move Grid event handlers to a list, add method to add
  custom handlers
 
 Change-Id: I3182f8155455971cfef45d27ff2151b38cbb7b64
@@ -817,7 +817,7 @@ index 5eb1b55..0d16d3e 100644
 From 3da57fe707d9977cdbb65faee4b19cf7ab6c24f4 Mon Sep 17 00:00:00 2001
 From: adam <adam@vaadin.com>
 Date: Tue, 27 Sep 2016 15:15:45 +0300
-Subject: [PATCH 4/4] Default null value if item property does not exist
+Subject: [PATCH 4/5] Default null value if item property does not exist
 
 Change-Id: I6f7718518afb67db76205490f7464dc8bf15f1af
 ---
@@ -840,6 +840,45 @@ index 388d74a..0d80236 100644
  
              data.put(columnKeys.key(cell.getPropertyId()), AbstractRenderer
                      .encodeValue(modelValue, renderer, converter, getLocale()));
+-- 
+2.7.4 (Apple Git-66)
+
+
+From caf464fae1e9d13847a9aa09dea23a99137cd2b9 Mon Sep 17 00:00:00 2001
+From: adam <adam@vaadin.com>
+Date: Tue, 27 Sep 2016 16:07:25 +0300
+Subject: [PATCH 5/5] Removed diamond operators to make compilable with
+ language version 1.6
+
+Change-Id: Ie5a6f9bb93f7e51ca5ec367d5bb670e55c4f773e
+---
+ client/src/main/java/com/vaadin/client/widgets/Grid.java | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/client/src/main/java/com/vaadin/client/widgets/Grid.java b/client/src/main/java/com/vaadin/client/widgets/Grid.java
+index 0d16d3e..85f4e40 100644
+--- a/client/src/main/java/com/vaadin/client/widgets/Grid.java
++++ b/client/src/main/java/com/vaadin/client/widgets/Grid.java
+@@ -7281,7 +7281,7 @@ public class Grid<T> extends ResizeComposite implements
+                 w = editor.getWidget(getColumn(editor.focusedColumnIndex));
+             }
+ 
+-            EditorDomEvent<T> editorEvent = new EditorDomEvent<>(e, cell, w);
++            EditorDomEvent<T> editorEvent = new EditorDomEvent<T>(e, cell, w);
+ 
+             return getEditor().getEventHandler().handleEvent(editorEvent);
+         }
+@@ -7476,8 +7476,8 @@ public class Grid<T> extends ResizeComposite implements
+ 
+     private CellStyleGenerator<T> cellStyleGenerator;
+     private RowStyleGenerator<T> rowStyleGenerator;
+-    private RowReference<T> rowReference = new RowReference<>(this);
+-    private CellReference<T> cellReference = new CellReference<>(rowReference);
++    private RowReference<T> rowReference = new RowReference<T>(this);
++    private CellReference<T> cellReference = new CellReference<T>(rowReference);
+     private RendererCellReference rendererCellReference = new RendererCellReference(
+             (RowReference<Object>) rowReference);
+ 
 -- 
 2.7.4 (Apple Git-66)
 
