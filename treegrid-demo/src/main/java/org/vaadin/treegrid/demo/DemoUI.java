@@ -16,8 +16,7 @@ import com.vaadin.ui.VerticalLayout;
 @Theme("demo")
 @Title("TreeGrid Add-on Demo")
 @SuppressWarnings("serial")
-public class DemoUI extends UI
-{
+public class DemoUI extends UI {
 
     @WebServlet(value = "/*", asyncSupported = true)
     @VaadinServletConfiguration(productionMode = false, ui = DemoUI.class, widgetset = "org.vaadin.treegrid.demo.DemoWidgetSet")
@@ -32,6 +31,8 @@ public class DemoUI extends UI
 
         DemoContainer container = new DemoContainer();
         grid.setContainerDataSource(container);
+
+        grid.setHierarchyColumn(DemoContainer.NAME_PROPERTY);
 
         grid.setSelectionMode(Grid.SelectionMode.MULTI);
         grid.setColumnReorderingAllowed(true);

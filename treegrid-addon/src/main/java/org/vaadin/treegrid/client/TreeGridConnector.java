@@ -1,6 +1,7 @@
 package org.vaadin.treegrid.client;
 
 import java.util.Map;
+import java.util.logging.Logger;
 
 import com.google.web.bindery.event.shared.HandlerRegistration;
 import com.vaadin.client.ServerConnector;
@@ -29,13 +30,31 @@ public class TreeGridConnector extends GridConnector {
         // Change renderer of hierarchy column
         if (stateChangeEvent.hasPropertyChanged("columns")) {
 
-            // TODO: 26/09/16 Make hierarchy column selectable
-            GridColumnState columnState = getState().columns.get(0);
-            Grid.Column column = getColumnIdToColumn().get(columnState.id);
+            // Column set by developer or the first one in order
+            String hierarchyColumnId =
+                    getState().hierarchyColumnId != null ? getState().hierarchyColumnId : getState().columnOrder.get(0);
 
-            HierarchyRenderer wrapperRenderer = getHierarchyRenderer();
-            wrapperRenderer.setInnerRenderer(((AbstractRendererConnector) columnState.rendererConnector).getRenderer());
-            column.setRenderer(wrapperRenderer);
+            // Find column's state
+            GridColumnState hierarchyColumnState = null;
+            for (GridColumnState cs : getState().columns) {
+                if (hierarchyColumnId.equals(cs.id)) {
+                    hierarchyColumnState = cs;
+                    break;
+                }
+            }
+
+            // Find column
+            Grid.Column hierarchyColumn = getColumnIdToColumn().get(hierarchyColumnId);
+
+            // Set renderer
+            if (hierarchyColumnState != null && hierarchyColumn != null) {
+                HierarchyRenderer wrapperRenderer = getHierarchyRenderer();
+                wrapperRenderer.setInnerRenderer(
+                        ((AbstractRendererConnector) hierarchyColumnState.rendererConnector).getRenderer());
+                hierarchyColumn.setRenderer(wrapperRenderer);
+            } else {
+                Logger.getLogger(TreeGridConnector.class.getName()).warning("Hierarchy column could not be found");
+            }
         }
     }
 
@@ -88,5 +107,10 @@ public class TreeGridConnector extends GridConnector {
             }
         }
         return null;
+    }
+
+    @Override
+    public TreeGridState getState() {
+        return (TreeGridState) super.getState();
     }
 }
