@@ -23,8 +23,6 @@ import elemental.json.JsonObject;
  */
 public class TreeGrid extends Grid {
 
-    private Column hierarchyColumn;
-
     public TreeGrid() {
         super();
 
