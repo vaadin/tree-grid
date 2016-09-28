@@ -1,0 +1,14 @@
+--- src/main/java/com/vaadin/ui/Grid.java	2016-09-28 11:18:45.000000000 +0300
++++ src/main/java/com/vaadin/ui/Grid.java	2016-09-28 11:18:12.000000000 +0300
+@@ -2195,8 +2195,9 @@
+             Renderer<?> renderer = column.getRenderer();
+
+             Item item = cell.getItem();
+-            Object modelValue = item.getItemProperty(cell.getPropertyId())
+-                    .getValue();
++            Property itemProperty = item.getItemProperty(cell.getPropertyId());
++            Object modelValue =
++                    itemProperty != null ? itemProperty.getValue() : null;
+
+             data.put(columnKeys.key(cell.getPropertyId()), AbstractRenderer
+                     .encodeValue(modelValue, renderer, converter, getLocale()));
