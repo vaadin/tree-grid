@@ -2,22 +2,16 @@
 
 TreeGrid is a UI component add-on for Vaadin 7.
 
-## Online demo
-
-Try the add-on demo at <url of the online demo>
-
-## Download release
-
-Official releases of this add-on are available at Vaadin Directory. For Maven instructions, download and reviews, go to http://vaadin.com/addon/treegrid
-
 ## Building and running demo
 
-git clone <url of the TreeGrid repository>
-mvn clean install
-cd demo
+git clone https://github.com/vaadin/vaadin-tree-grid\
+mvn clean install\
+cd treegrid-demo\
 mvn jetty:run
 
 To see the demo, navigate to http://localhost:8080/
+
+Note that applying patch files from treegrid-addon/src/main/resources/patches might be needed for successful compilation.
 
 ## Development with Eclipse IDE
 
@@ -51,15 +45,17 @@ Debugging client side code in the treegrid-demo project:
  
 ## Release notes
 
-### Version 1.0-SNAPSHOT
-- ...
-- ...
+### Version 1.0
+- Basic functionality for displaying hierarchical data in Grid
+- CSS configurable hierarchy indicators
+- Expand/collapse functionality on mouse click
+- Programmatically settable hierarchy column
+- Keyboard navigation (Alt/Option + Arrow keys)
+- Support for custom renderer on hierarchy column
+- Support for custom depth calculation logic
+- Support for custom collapse logic
 
 ## Roadmap
-
-This component is developed as a hobby with no public roadmap or any guarantees of upcoming releases. That said, the following features are planned for upcoming releases:
-- ...
-- ...
 
 ## Issue tracking
 
@@ -77,34 +73,40 @@ Contributions are welcome, but there are no guarantees that they are accepted as
 
 ## License & Author
 
-Add-on is distributed under Apache License 2.0. For license terms, see LICENSE.txt.
-
-TreeGrid is written by <...>
-
 # Developer Guide
 
 ## Getting started
 
 Here is a simple example on how to try out the add-on component:
 
-<...>
+```java
+import org.vaadin.treegrid.container.Measurable;
+import com.vaadin.data.Collapsible;
+// ...
 
-For a more comprehensive example, see src/test/java/org/vaadin/template/demo/DemoUI.java
+public class DemoContainer extends HierarchicalContainer implements Collapsible, Measurable {
+    // ...
+}
+```
 
-## Features
+```java
+public class DemoUI extends UI {
+    // ...
 
-### Feature A
+    @Override
+    protected void init(VaadinRequest request) {
+        final TreeGrid grid = new TreeGrid();
 
-<...>
+        DemoContainer container = new DemoContainer();
+        grid.setContainerDataSource(container);
 
-### Feature B
+        grid.setHierarchyColumn(DemoContainer.NAME_PROPERTY);
 
-<...>
+        grid.setColumnReorderingAllowed(true);
 
-### Feature C
+        // ...
+    }
+}
+```
 
-<...>
-
-## API
-
-TreeGrid JavaDoc is available online at <...>
+For a more comprehensive example, see treegrid-demo/src/main/java/org/vaadin/treegrid/demo/DemoUI.java
