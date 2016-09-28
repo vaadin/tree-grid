@@ -44,9 +44,7 @@ public class NavigationExtensionConnector extends AbstractExtensionConnector {
                             case KeyCodes.KEY_RIGHT:
                                 if (!leaf) {
                                     if (collapsed) {
-                                        NodeCollapseRpc rpc = getRpcProxy(NodeCollapseRpc.class);
-                                        String rowKey = getParent().getRowKey(cell.getRow());
-                                        rpc.toggleCollapse(rowKey);
+                                        toggleCollapse(getParent().getRowKey(cell.getRow()));
                                     } else {
                                         // Focus on next row
                                         grid.focusCell(cell.getRowIndex() + 1, cell.getColumnIndex());
@@ -56,8 +54,7 @@ public class NavigationExtensionConnector extends AbstractExtensionConnector {
                             case KeyCodes.KEY_LEFT:
                                 if (!collapsed) {
                                     // collapse node
-                                    NodeCollapseRpc rpc = getRpcProxy(NodeCollapseRpc.class);
-                                    rpc.toggleCollapse(getParent().getRowKey(cell.getRow()));
+                                    toggleCollapse(getParent().getRowKey(cell.getRow()));
                                 } else if (depth > 0) {
                                     // jump to parent
                                     grid.focusCell(parentIndex, cell.getColumnIndex());

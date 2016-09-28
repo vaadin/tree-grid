@@ -1,5 +1,6 @@
 package org.vaadin.treegrid.client;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -91,7 +92,7 @@ public class HierarchyRenderer extends ClickableRenderer<Object, Widget> {
                 content = ((WidgetRenderer) innerRenderer).createWidget();
             } else {
                 // TODO: 20/09/16 create more general widget?
-                content = new HTML();
+                content = GWT.create(HTML.class);
             }
 
             content.getElement().addClassName(CLASS_TREE_GRID_CELL_CONTENT);
