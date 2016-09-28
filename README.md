@@ -4,9 +4,9 @@ TreeGrid is a UI component add-on for Vaadin 7.
 
 ## Building and running demo
 
-git clone https://github.com/vaadin/vaadin-tree-grid  
-mvn clean install
-cd treegrid-demo
+git clone https://github.com/vaadin/vaadin-tree-grid <br/>
+mvn clean install <br/>
+cd treegrid-demo <br/>
 mvn jetty:run
 
 To see the demo, navigate to http://localhost:8080/
