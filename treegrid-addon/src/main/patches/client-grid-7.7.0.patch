@@ -1,5 +1,5 @@
---- src/main/java/com/vaadin/client/widgets/Grid.java	2016-09-28 11:44:33.000000000 +0300
-+++ src/main/java/com/vaadin/client/widgets/Grid.java	2016-09-28 11:44:10.000000000 +0300
+--- /src/main/java/com/vaadin/client/widgets/Grid.java	2016-09-28 11:44:33.000000000 +0300
++++ /src/main/java/com/vaadin/client/widgets/Grid.java	2016-09-28 11:44:10.000000000 +0300
 @@ -109,6 +109,7 @@
  import com.vaadin.client.widget.grid.AutoScroller;
  import com.vaadin.client.widget.grid.AutoScroller.AutoScrollerCallback;
