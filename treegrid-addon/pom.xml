@@ -220,7 +220,8 @@
 							</artifactItems>
 							<includes>
 								com/vaadin/ui/Grid.java,
-								com/vaadin/client/widgets/Grid.java
+								com/vaadin/client/widgets/Grid.java,
+								com/vaadin/data/fieldgroup/FieldGroup.java
 							</includes>
 						</configuration>
 					</execution>
@@ -235,6 +236,7 @@
 						<patch>client-grid-7.7.0.patch</patch>
 						<patch>server-grid-7.7.0.patch</patch>
 						<patch>browser-event-handler-7.7.0.patch</patch>
+						<patch>fieldgroup-7.7.0.patch</patch>
 					</patches>
 					<strictPatching>true</strictPatching>
 					<strip>4</strip>
