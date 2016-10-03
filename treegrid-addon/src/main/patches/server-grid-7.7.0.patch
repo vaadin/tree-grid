@@ -1,6 +1,32 @@
---- /src/main/java/com/vaadin/ui/Grid.java	2016-09-28 11:18:45.000000000 +0300
-+++ /src/main/java/com/vaadin/ui/Grid.java	2016-09-28 11:18:12.000000000 +0300
-@@ -2195,8 +2195,9 @@
+--- /src/main/java/com/vaadin/ui/Grid.java	2016-10-03 11:28:07.000000000 +0300
++++ /src/main/java/com/vaadin/ui/Grid.java	2016-10-03 11:26:24.000000000 +0300
+@@ -548,6 +548,25 @@
+             }
+             return field;
+         }
++
++        @Override
++        public void setItemDataSource(Item itemDataSource) {
++            super.itemDataSource = itemDataSource;
++
++            List<Field<?>> fields = new ArrayList<Field<?>>(getFields());
++            if (itemDataSource == null) {
++                for (Field<?> f : fields) {
++                    unbind(f);
++                }
++            } else {
++                for (Field<?> f : fields) {
++                    if (itemDataSource.getItemProperty(getPropertyId(f))
++                            != null) {
++                        bind(f, getPropertyId(f));
++                    }
++                }
++            }
++        }
+     }
+
+     /**
+@@ -2195,8 +2214,9 @@
              Renderer<?> renderer = column.getRenderer();
 
              Item item = cell.getItem();
@@ -12,3 +38,15 @@
 
              data.put(columnKeys.key(cell.getPropertyId()), AbstractRenderer
                      .encodeValue(modelValue, renderer, converter, getLocale()));
+@@ -6802,8 +6822,9 @@
+         editorFieldGroup.setItemDataSource(item);
+
+         for (Column column : getColumns()) {
+-            column.getState().editorConnector = getEditorField(column
+-                    .getPropertyId());
++            column.getState().editorConnector =
++                    item.getItemProperty(column.getPropertyId()) != null
++                            ? getEditorField(column.getPropertyId()) : null;
+         }
+
+         editorActive = true;
