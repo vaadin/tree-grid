@@ -11,6 +11,4 @@ public class TreeGrid extends Grid<JsonObject> {
         /*-{
             this.@com.vaadin.client.widgets.Grid::focusCell(II)(rowIndex, columnIndex);
         }-*/;
-
-
 }

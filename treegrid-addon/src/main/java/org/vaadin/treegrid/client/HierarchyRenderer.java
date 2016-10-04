@@ -19,11 +19,12 @@ import com.vaadin.shared.ui.grid.GridState;
 
 import elemental.json.JsonObject;
 
-public class HierarchyRenderer extends ClickableRenderer<Object, Widget> {
+class HierarchyRenderer extends ClickableRenderer<Object, Widget> {
+
+    static final String CLASS_TREE_GRID_EXPANDER = "v-tree-grid-expander";
 
     private static final String CLASS_TREE_GRID_NODE = "v-tree-grid-node";
     private static final String CLASS_TREE_GRID_CELL_CONTENT = "v-tree-grid-cell-content";
-    private static final String CLASS_TREE_GRID_EXPANDER = "v-tree-grid-expander";
     private static final String CLASS_COLLAPSED = "collapsed";
     private static final String CLASS_EXPANDED = "expanded";
     private static final String CLASS_DEPTH = "depth-";
@@ -100,7 +101,7 @@ public class HierarchyRenderer extends ClickableRenderer<Object, Widget> {
             panel.add(expander);
             panel.add(content);
 
-            expander.addClickHandler(HierarchyRenderer.this);
+            panel.addDomHandler(HierarchyRenderer.this, ClickEvent.getType());
 
             initWidget(panel);
         }
