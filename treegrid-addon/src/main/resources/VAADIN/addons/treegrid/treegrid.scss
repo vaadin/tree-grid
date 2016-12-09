@@ -1,17 +1,17 @@
+@import "variables";
+
 @mixin treegrid {
 
   // Expander with and item indentation constants
-  $expander-width: 10px;
-  $expander-padding: 10px;
-  $indent: $expander-width + $expander-padding;
+  $indent: $tg-expander-width + $tg-expander-padding;
 
   // Classname for depth styling
   $class-depth: depth !default;
 
   .v-tree-grid-expander {
     display: inline-block;
-    width: 10px;
-    padding-right: 10px;
+    width: $tg-expander-width;
+    padding-right: $tg-expander-padding;
 
     &::before {
       display: inline-block;
@@ -22,14 +22,14 @@
     // Expander for expanded item
     &.expanded {
       &::before {
-        content: '\f0d7';
+        content: $tg-expander-char-expanded;
       }
     }
 
     // Expander for collapsed item
     &.collapsed {
       &::before {
-        content: '\f0da';
+        content: $tg-expander-char-collapsed;
       }
     }
   }
