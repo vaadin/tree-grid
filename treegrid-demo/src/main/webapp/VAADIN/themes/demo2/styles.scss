@@ -1,0 +1,15 @@
+@import "../valo/valo.scss";
+
+@import "addons.scss";
+
+// Prefix all selectors in your theme with .demo
+.demo2 {
+
+	$tg-expander-char-expanded: '\f147';
+	$tg-expander-char-collapsed: '\f196';
+
+	// Include valo theme styles in your theme
+	@include valo;
+
+	@include addons;
+}

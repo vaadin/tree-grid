@@ -10,17 +10,20 @@ import org.vaadin.treegrid.container.Measurable;
 import com.vaadin.data.Collapsible;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.HierarchicalContainer;
+import com.vaadin.server.Resource;
 
 public class DemoContainer extends HierarchicalContainer implements Collapsible, Measurable {
 
-    static final String NAME_PROPERTY = "Name";
-    static final String HOURS_PROPERTY = "Hours done";
-    static final String MODIFIED_PROPERTY = "Last modified";
+    static final String PROPERTY_NAME = "Name";
+    static final String PROPERTY_HOURS = "Hours done";
+    static final String PROPERTY_MODIFIED = "Last modified";
+    static final String PROPERTY_ICON = "Icon";
 
     public DemoContainer() {
-        addContainerProperty(NAME_PROPERTY, String.class, "");
-        addContainerProperty(HOURS_PROPERTY, Integer.class, 0);
-        addContainerProperty(MODIFIED_PROPERTY, Date.class, new Date());
+        addContainerProperty(PROPERTY_NAME, String.class, "");
+        addContainerProperty(PROPERTY_HOURS, Integer.class, 0);
+        addContainerProperty(PROPERTY_MODIFIED, Date.class, new Date());
+        addContainerProperty(PROPERTY_ICON, Resource.class, null);
 
         for (Object[] r : DataSource.getRoot()) {
             addItem(r);
@@ -41,14 +44,14 @@ public class DemoContainer extends HierarchicalContainer implements Collapsible,
     }
 
     private void setProperties(Item item, Object[] values) {
-        item.getItemProperty(NAME_PROPERTY).setValue(values[0]);
-        item.getItemProperty(HOURS_PROPERTY).setValue(values[1]);
-        item.getItemProperty(MODIFIED_PROPERTY).setValue(values[2]);
+        item.getItemProperty(PROPERTY_NAME).setValue(values[0]);
+        item.getItemProperty(PROPERTY_HOURS).setValue(values[1]);
+        item.getItemProperty(PROPERTY_MODIFIED).setValue(values[2]);
+        item.getItemProperty(PROPERTY_ICON).setValue(values[3]);
     }
 
     @Override
     public void setCollapsed(Object itemId, boolean collapsed) {
-//        hierarchyData.get(itemId).setExpanded(!collapsed);
         expandedNodes.put(itemId, !collapsed);
 
         if (collapsed) {
