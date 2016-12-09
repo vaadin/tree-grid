@@ -70,7 +70,7 @@ class DataSource {
 
     private static void addChild(Object parent, Object[] child) {
         if (!children.containsKey(parent)) {
-            children.put(parent, new ArrayList<>());
+            children.put(parent, new ArrayList<Object[]>());
         }
         children.get(parent).add(child);
     }

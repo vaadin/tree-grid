@@ -10,9 +10,9 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<maven.compiler.source>1.8</maven.compiler.source>
-		<maven.compiler.target>1.8</maven.compiler.target>
-		<vaadin.version>7.7.0</vaadin.version>
+		<maven.compiler.source>1.7</maven.compiler.source>
+		<maven.compiler.target>1.7</maven.compiler.target>
+		<vaadin.version>7.7.6</vaadin.version>
 		<vaadin.plugin.version>${vaadin.version}</vaadin.plugin.version>
 
 		<!-- ZIP Manifest fields -->
@@ -24,12 +24,12 @@
 		<Vaadin-Addon>${project.artifactId}-${project.version}.jar</Vaadin-Addon>
 	</properties>
 
-    <!--     
+    <!--
 	<organization>
 		<name>My Name</name>
 		<url>https://github.com/mygithubaccount/TreeGrid/</url>
 	</organization>
-    
+
 	<scm>
 		<url>git://github.com/mygithubaccount/TreeGrid.git</url>
 		<connection>scm:git:git://github.com/mygithubaccount/TreeGrid.git</connection>
@@ -93,7 +93,7 @@
 			<version>${vaadin.version}</version>
 			<scope>provided</scope>
 		</dependency>
-		
+
 		<!-- This can be replaced with TestNG or some other test framework supported by the surefire plugin -->
 		<dependency>
 			<groupId>junit</groupId>
@@ -133,8 +133,8 @@
 					</archive>
 				</configuration>
 			</plugin>
-			
-<!--			<plugin>
+
+			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
 				<version>2.9</version>
@@ -146,7 +146,7 @@
 						</goals>
 					</execution>
 				</executions>
-			</plugin>-->
+			</plugin>
 
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -188,70 +188,6 @@
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>2.14.1</version>
 			</plugin>
-
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-dependency-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>unpack-vaadin-sources</id>
-						<phase>generate-sources</phase>
-						<goals>
-							<goal>unpack</goal>
-						</goals>
-						<configuration>
-							<artifactItems>
-								<artifactItem>
-									<groupId>com.vaadin</groupId>
-									<artifactId>vaadin-client</artifactId>
-									<type>jar</type>
-									<classifier>sources</classifier>
-									<overWrite>true</overWrite>
-									<outputDirectory>${project.build.sourceDirectory}</outputDirectory>
-								</artifactItem>
-								<artifactItem>
-									<groupId>com.vaadin</groupId>
-									<artifactId>vaadin-server</artifactId>
-									<type>jar</type>
-									<classifier>sources</classifier>
-									<overWrite>true</overWrite>
-									<outputDirectory>${project.build.sourceDirectory}</outputDirectory>
-								</artifactItem>
-							</artifactItems>
-							<includes>
-								com/vaadin/ui/Grid.java,
-								com/vaadin/client/widgets/Grid.java,
-								com/vaadin/data/fieldgroup/FieldGroup.java
-							</includes>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-patch-plugin</artifactId>
-				<configuration>
-					<optimizations>false</optimizations>
-					<patches>
-						<patch>client-grid-7.7.0.patch</patch>
-						<patch>server-grid-7.7.0.patch</patch>
-						<patch>browser-event-handler-7.7.0.patch</patch>
-						<patch>fieldgroup-7.7.0.patch</patch>
-					</patches>
-					<strictPatching>true</strictPatching>
-					<strip>4</strip>
-				</configuration>
-				<executions>
-					<execution>
-						<id>patch</id>
-						<phase>process-sources</phase>
-						<goals>
-							<goal>apply</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-
 		</plugins>
 
 		<!-- This is needed for the sources required by the client-side compiler to be 
