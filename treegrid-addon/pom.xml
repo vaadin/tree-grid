@@ -2,11 +2,11 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>org.vaadin</groupId>
-	<artifactId>treegrid</artifactId>
+	<groupId>com.vaadin</groupId>
+	<artifactId>vaadin-treegrid</artifactId>
 	<packaging>jar</packaging>
-	<version>1.0</version>
-	<name>TreeGrid Add-on</name>
+	<version>0.7.0</version>
+	<name>Vaadin TreeGrid</name>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -24,24 +24,21 @@
 		<Vaadin-Addon>${project.artifactId}-${project.version}.jar</Vaadin-Addon>
 	</properties>
 
-    <!--
 	<organization>
-		<name>My Name</name>
-		<url>https://github.com/mygithubaccount/TreeGrid/</url>
+		<name>Vaadin Ltd</name>
+		<url>https://github.com/vaadin/vaadin-tree-grid/</url>
 	</organization>
 
 	<scm>
-		<url>git://github.com/mygithubaccount/TreeGrid.git</url>
-		<connection>scm:git:git://github.com/mygithubaccount/TreeGrid.git</connection>
-		<developerConnection>scm:git:ssh://git@github.com:/mygithubaccount/${ComponentClassName}.git</developerConnection>
-		<tag>TreeGrid add-on for Vaadin</tag>
+		<url>https://github.com/vaadin/vaadin-tree-grid/</url>
+		<connection>scm:git:git://github.com/github.com/vaadin/vaadin-tree-grid.git</connection>
+		<developerConnection>scm:git:ssh://git@github.com:/github.com/vaadin/vaadin-tree-grid.git</developerConnection>
 	</scm>
 
 	<issueManagement>
 		<system>GitHub</system>
-		<url>https://github.com/mygithubaccount/TreeGrid/issues</url>
+		<url>https://github.com/vaadin/vaadin-tree-grid/issues</url>
 	</issueManagement>
-    -->
 
 	<licenses>
 		<license>

@@ -5,7 +5,7 @@
 	<groupId>org.vaadin</groupId>
 	<artifactId>treegrid-demo</artifactId>
 	<packaging>war</packaging>
-	<version>1.0</version>
+	<version>0.7.0</version>
 	<name>TreeGrid Add-on Demo</name>
 
 	<properties>
@@ -16,25 +16,6 @@
 		<vaadin.plugin.version>7.7.6</vaadin.plugin.version>
 		<jetty.plugin.version>9.2.3.v20140905</jetty.plugin.version>
 	</properties>
-
-    <!--     
-	<organization>
-		<name>My Name</name>
-		<url>https://github.com/mygithubaccount/TreeGrid/</url>
-	</organization>
-    
-	<scm>
-		<url>git://github.com/mygithubaccount/TreeGrid.git</url>
-		<connection>scm:git:git://github.com/mygithubaccount/TreeGrid.git</connection>
-		<developerConnection>scm:git:ssh://git@github.com:/mygithubaccount/${ComponentClassName}.git</developerConnection>
-		<tag>TreeGrid add-on for Vaadin</tag>
-	</scm>
-
-	<issueManagement>
-		<system>GitHub</system>
-		<url>https://github.com/mygithubaccount/TreeGrid/issues</url>
-	</issueManagement>
-    -->
 
 	<licenses>
 		<license>
@@ -88,8 +69,8 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>org.vaadin</groupId>
-			<artifactId>treegrid</artifactId>
+			<groupId>com.vaadin</groupId>
+			<artifactId>vaadin-treegrid</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
