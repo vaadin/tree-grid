@@ -6,3 +6,6 @@ treegrid-demo/target
 treegrid-demo/*.iml
 treegrid-demo/src/main/webapp/VAADIN/widgetsets/
 treegrid-demo/src/main/webapp/VAADIN/themes/demo/styles.scss.cache
+
+# JRebel
+rebel.xml
