@@ -18,7 +18,7 @@ public class NavigationExtension extends Grid.AbstractGridExtension {
         });
     }
 
-    public static NavigationExtension extend(TreeGrid grid) {
+    static NavigationExtension extend(TreeGrid grid) {
         return new NavigationExtension(grid);
     }
 }
