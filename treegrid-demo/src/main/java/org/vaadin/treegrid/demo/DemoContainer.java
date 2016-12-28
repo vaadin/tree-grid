@@ -28,6 +28,8 @@ public class DemoContainer extends HierarchicalContainer implements Collapsible,
         for (Object[] r : DataSource.getRoot()) {
             addItem(r);
         }
+
+        setItemSorter(new DemoItemSorter());
     }
 
     private Object addItem(Object[] values) {
