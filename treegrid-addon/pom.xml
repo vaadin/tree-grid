@@ -5,7 +5,7 @@
 	<groupId>com.vaadin</groupId>
 	<artifactId>vaadin-treegrid</artifactId>
 	<packaging>jar</packaging>
-	<version>0.7.0</version>
+	<version>0.7-SNAPSHOT</version>
 	<name>Vaadin TreeGrid</name>
 
 	<properties>
