@@ -5,7 +5,7 @@
 	<groupId>org.vaadin</groupId>
 	<artifactId>treegrid-demo</artifactId>
 	<packaging>war</packaging>
-	<version>0.7-SNAPSHOT</version>
+	<version>0.7.1</version>
 	<name>TreeGrid Add-on Demo</name>
 
 	<properties>
