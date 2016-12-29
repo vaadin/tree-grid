@@ -11,6 +11,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
+import com.vaadin.client.WidgetUtil;
 import com.vaadin.client.renderers.ClickableRenderer;
 import com.vaadin.client.renderers.Renderer;
 import com.vaadin.client.renderers.WidgetRenderer;
@@ -21,9 +22,8 @@ import elemental.json.JsonObject;
 
 class HierarchyRenderer extends ClickableRenderer<Object, Widget> {
 
-    static final String CLASS_TREE_GRID_EXPANDER = "v-tree-grid-expander";
-
     private static final String CLASS_TREE_GRID_NODE = "v-tree-grid-node";
+    private static final String CLASS_TREE_GRID_EXPANDER = "v-tree-grid-expander";
     private static final String CLASS_TREE_GRID_CELL_CONTENT = "v-tree-grid-cell-content";
     private static final String CLASS_COLLAPSED = "collapsed";
     private static final String CLASS_EXPANDED = "expanded";
@@ -76,6 +76,22 @@ class HierarchyRenderer extends ClickableRenderer<Object, Widget> {
         this.innerRenderer = innerRenderer;
     }
 
+    /**
+     * Decides whether the element was rendered by {@link HierarchyRenderer}
+     */
+    static boolean isElementInHierarchyWidget(Element element) {
+        Widget w = WidgetUtil.findWidget(element, null);
+
+        while (w != null) {
+            if (w instanceof HierarchyItem) {
+                return true;
+            }
+            w = w.getParent();
+        }
+
+        return false;
+    }
+
     private class HierarchyItem extends Composite {
 
         private FlowPanel panel;
@@ -101,7 +117,7 @@ class HierarchyRenderer extends ClickableRenderer<Object, Widget> {
             panel.add(expander);
             panel.add(content);
 
-            panel.addDomHandler(HierarchyRenderer.this, ClickEvent.getType());
+            expander.addClickHandler(HierarchyRenderer.this);
 
             initWidget(panel);
         }
