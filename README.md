@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/vaadin/vaadin-tree-grid.svg?branch=master)](https://travis-ci.org/vaadin/vaadin-tree-grid)
+
 # Vaadin TreeGrid add-on
 
 TreeGrid is a UI component add-on for Vaadin 7. It adds the ability to display and edit hierarchical data source in the Grid component (similar to TreeTable's extension to Table).
@@ -5,6 +7,7 @@ TreeGrid is a UI component add-on for Vaadin 7. It adds the ability to display a
 https://vaadin.com/directory#!addon/vaadin-treegrid
 
 ## Getting started
+[Live Demo ↗](http://adam.app.fi/treegrid)
 
 Here is a simple example on how to try out the add-on component:
 
