@@ -165,7 +165,15 @@ public class TreeGridConnector extends GridConnector {
         @Override
         public void onEvent(Grid.GridEvent<JsonObject> event) {
             Element target = Element.as(event.getDomEvent().getEventTarget());
-            if (getWidget().isElementInChildWidget(target) &&
+            boolean elementInChildWidget = getWidget().isElementInChildWidget(target);
+
+            // Ignore if event was handled by keyboard navigation handler
+            if (event.isHandled() && !elementInChildWidget) {
+                return;
+            }
+
+            // Ignore target in child widget but handle hierarchy widget
+            if (elementInChildWidget &&
                     !HierarchyRenderer.isElementInHierarchyWidget(target)) {
                 return;
             }
