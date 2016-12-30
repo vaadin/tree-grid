@@ -5,7 +5,7 @@ treegrid-addon/*.iml
 treegrid-demo/target
 treegrid-demo/*.iml
 treegrid-demo/src/main/webapp/VAADIN/widgetsets/
-*/styles.scss.cache
+**/styles.scss.cache
 
 # JRebel
 rebel.xml
