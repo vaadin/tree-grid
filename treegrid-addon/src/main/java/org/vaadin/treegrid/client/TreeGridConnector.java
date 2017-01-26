@@ -62,6 +62,9 @@ public class TreeGridConnector extends GridConnector {
                 wrapperRenderer.setInnerRenderer(
                         ((AbstractRendererConnector) hierarchyColumnState.rendererConnector).getRenderer());
                 hierarchyColumn.setRenderer(wrapperRenderer);
+
+                // Set frozen columns again after setting hierarchy column as setRenderer() replaces DOM elements
+                getWidget().setFrozenColumnCount(getState().frozenColumnCount);
             } else {
                 Logger.getLogger(TreeGridConnector.class.getName()).warning("Hierarchy column could not be found");
             }
