@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/vaadin/vaadin-tree-grid.svg?branch=master)](https://travis-ci.org/vaadin/vaadin-tree-grid)
+[![Build Status](https://travis-ci.org/vaadin/tree-grid.svg?branch=master)](https://travis-ci.org/vaadin/tree-grid)
 
 # Vaadin TreeGrid add-on
 
@@ -46,7 +46,7 @@ For a more comprehensive example, see treegrid-demo/src/main/java/org/vaadin/tre
 ## Building and running the add-on project
 
 ```
-git clone https://github.com/vaadin/vaadin-tree-grid
+git clone https://github.com/vaadin/tree-grid
 mvn clean install
 cd treegrid-demo
 mvn jetty:run
@@ -98,7 +98,7 @@ Debugging client side code in the treegrid-demo project:
 
 ## Issue tracking
 
-The issues for this add-on are tracked on the https://github.com/vaadin/vaadin-tree-grid/issues page. All bug reports and feature requests are appreciated.
+The issues for this add-on are tracked on the https://github.com/vaadin/tree-grid/issues page. All bug reports and feature requests are appreciated.
 
 ## Contributions
 
