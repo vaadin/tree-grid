@@ -1,6 +1,9 @@
 package org.vaadin.treegrid;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
+import java.util.List;
 import java.util.logging.Logger;
 
 import org.vaadin.treegrid.client.TreeGridState;
@@ -9,8 +12,18 @@ import org.vaadin.treegrid.container.IndexedContainerHierarchicalWrapper;
 
 import com.vaadin.data.Collapsible;
 import com.vaadin.data.Container;
+import com.vaadin.server.EncodeResult;
+import com.vaadin.server.JsonCodec;
+import com.vaadin.server.ServerRpcManager;
+import com.vaadin.shared.MouseEventDetails;
+import com.vaadin.shared.data.sort.SortDirection;
 import com.vaadin.shared.ui.grid.GridColumnState;
+import com.vaadin.shared.ui.grid.GridConstants;
+import com.vaadin.shared.ui.grid.GridServerRpc;
+import com.vaadin.ui.ConnectorTracker;
 import com.vaadin.ui.Grid;
+
+import elemental.json.JsonObject;
 
 /**
  * A grid component for displaying tabular hierarchical data.
@@ -25,6 +38,9 @@ public class TreeGrid extends Grid {
 
     public TreeGrid() {
         super();
+
+        // Replace GridServerRpc with custom one to fix column reorder issue (#6).
+        swapServerRpc();
 
         // Attaches hierarchy data to the row
         HierarchyDataGenerator.extend(this);
@@ -82,5 +98,162 @@ public class TreeGrid extends Grid {
             Collapsible container = (Collapsible) getContainerDataSource();
             container.setCollapsed(itemId, !container.isCollapsed(itemId)); // Collapsible
         }
+    }
+
+    /**
+     * Replaces GridServerRpc instance with a custom one created by {@link #createRpc(GridServerRpc)}.
+     * <p> Used as a temporary fix for https://github.com/vaadin/tree-grid/issues/6.
+     */
+    private void swapServerRpc() {
+        try {
+            // Get original RPC
+            ServerRpcManager gridServerRpcManager = getRpcManager(GridServerRpc.class.getName());
+            Method getImplementation = gridServerRpcManager.getClass().getDeclaredMethod("getImplementation");
+            getImplementation.setAccessible(true);
+            GridServerRpc oldRpc = (GridServerRpc) getImplementation.invoke(gridServerRpcManager);
+
+            // Override RPC
+            GridServerRpc newRpc = createRpc(oldRpc);
+
+            // Replace old RPC with new one
+            registerRpc(newRpc, GridServerRpc.class);
+
+        } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Custom server rpc that wraps GridServerRpc. Overrides {@link GridServerRpc#columnsReordered(List, List)} and
+     * {@link GridServerRpc#columnVisibilityChanged(String, boolean, boolean)} methods and delegates all others to the
+     * wrapped instance.
+     */
+    private GridServerRpc createRpc(final GridServerRpc innerRpc) {
+        return new GridServerRpc() {
+            @Override
+            public void sort(String[] columnIds, SortDirection[] directions, boolean userOriginated) {
+                // Delegated to wrapped RPC
+                innerRpc.sort(columnIds, directions, userOriginated);
+            }
+
+            @Override
+            public void itemClick(String rowKey, String columnId, MouseEventDetails details) {
+                // Delegated to wrapped RPC
+                innerRpc.itemClick(rowKey, columnId, details);
+            }
+
+            @Override
+            public void contextClick(int rowIndex, String rowKey, String columnId, GridConstants.Section section,
+                    MouseEventDetails details) {
+                // Delegated to wrapped RPC
+                innerRpc.contextClick(rowIndex, rowKey, columnId, section, details);
+            }
+
+            /**
+             * Different from the one in Grid that it uses {@link Class#getField(String)} to be able to
+             * access field in super class.
+             */
+            @Override
+            public void columnsReordered(List<String> newColumnOrder, List<String> oldColumnOrder) {
+                // Copied from wrapped RPC and modified
+                final String diffStateKey = "columnOrder";
+                ConnectorTracker connectorTracker = getUI()
+                        .getConnectorTracker();
+                JsonObject diffState = connectorTracker.getDiffState(TreeGrid.this);
+                // discard the change if the columns have been reordered from
+                // the server side, as the server side is always right
+                if (getState(false).columnOrder.equals(oldColumnOrder)) {
+                    // Don't mark as dirty since client has the state already
+                    getState(false).columnOrder = newColumnOrder;
+                    // write changes to diffState so that possible reverting the
+                    // column order is sent to client
+                    assert diffState
+                            .hasKey(diffStateKey) : "Field name has changed";
+                    Type type = null;
+                    try {
+                        type = (getState(false).getClass()
+                                .getField(diffStateKey)
+                                .getGenericType());
+                    } catch (NoSuchFieldException e) {
+                        e.printStackTrace();
+                    } catch (SecurityException e) {
+                        e.printStackTrace();
+                    }
+                    EncodeResult encodeResult = JsonCodec.encode(
+                            getState(false).columnOrder, diffState, type,
+                            connectorTracker);
+
+                    diffState.put(diffStateKey, encodeResult.getEncodedValue());
+                    fireEvent(new ColumnReorderEvent(TreeGrid.this, true));
+                } else {
+                    // make sure the client is reverted to the order that the
+                    // server thinks it is
+                    diffState.remove(diffStateKey);
+                    markAsDirty();
+                }
+            }
+
+            /**
+             * Different from the one in Grid that it uses {@link Class#getField(String)} to be able to
+             * access field in super class.
+             */
+            @Override
+            public void columnVisibilityChanged(String id, boolean hidden, boolean userOriginated) {
+                // Copied from wrapped RPC and modified
+                try {
+                    final Column column;
+                    Method getColumnByColumnId = Grid.class.getDeclaredMethod("getColumnByColumnId", String.class);
+                    column = (Column) getColumnByColumnId.invoke(TreeGrid.this, id);
+
+                    Method getState = Column.class.getDeclaredMethod("getState");
+
+                    final GridColumnState columnState = (GridColumnState) getState.invoke(column);
+
+                    if (columnState.hidden != hidden) {
+                        columnState.hidden = hidden;
+
+                        final String diffStateKey = "columns";
+                        ConnectorTracker connectorTracker = getUI()
+                                .getConnectorTracker();
+                        JsonObject diffState = connectorTracker
+                                .getDiffState(TreeGrid.this);
+
+                        assert diffState
+                                .hasKey(diffStateKey) : "Field name has changed";
+                        Type type = null;
+                        try {
+                            type = (getState(false).getClass().getSuperclass()
+                                    .getDeclaredField(diffStateKey)
+                                    .getGenericType());
+                        } catch (NoSuchFieldException e) {
+                            e.printStackTrace();
+                        } catch (SecurityException e) {
+                            e.printStackTrace();
+                        }
+                        EncodeResult encodeResult = JsonCodec.encode(
+                                getState(false).columns, diffState, type,
+                                connectorTracker);
+
+                        diffState.put(diffStateKey, encodeResult.getEncodedValue());
+
+                        fireEvent(new ColumnVisibilityChangeEvent(TreeGrid.this, column, hidden,
+                                userOriginated));
+                    }
+
+                } catch (NoSuchMethodException e) {
+                    e.printStackTrace();
+                } catch (InvocationTargetException e) {
+                    e.printStackTrace();
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void columnResized(String id, double pixels) {
+                // Delegated to wrapped RPC
+                innerRpc.columnResized(id, pixels);
+            }
+        };
     }
 }
