@@ -72,8 +72,23 @@ class HierarchyRenderer extends ClickableRenderer<Object, Widget> {
         }
     }
 
+    /**
+     * Sets the renderer to be wrapped. This is the original renderer before hierarchy is applied.
+     *
+     * @param innerRenderer
+     *         Renderer to be wrapped.
+     */
     void setInnerRenderer(Renderer innerRenderer) {
         this.innerRenderer = innerRenderer;
+    }
+
+    /**
+     * Returns the wrapped renderer.
+     *
+     * @return Wrapped renderer.
+     */
+    Renderer getInnerRenderer() {
+        return this.innerRenderer;
     }
 
     /**

@@ -8,7 +8,6 @@ import com.google.gwt.dom.client.Element;
 import com.google.web.bindery.event.shared.HandlerRegistration;
 import com.vaadin.client.ServerConnector;
 import com.vaadin.client.communication.StateChangeEvent;
-import com.vaadin.client.connectors.AbstractRendererConnector;
 import com.vaadin.client.connectors.GridConnector;
 import com.vaadin.client.renderers.ClickableRenderer;
 import com.vaadin.client.widget.grid.EventCellReference;
@@ -16,12 +15,13 @@ import com.vaadin.client.widget.grid.GridEventHandler;
 import com.vaadin.client.widget.grid.events.GridClickEvent;
 import com.vaadin.client.widgets.Grid;
 import com.vaadin.shared.ui.Connect;
-import com.vaadin.shared.ui.grid.GridColumnState;
 
 import elemental.json.JsonObject;
 
 @Connect(org.vaadin.treegrid.TreeGrid.class)
 public class TreeGridConnector extends GridConnector {
+
+    private String hierarchyColumnId;
 
     @Override
     public TreeGrid getWidget() {
@@ -33,40 +33,48 @@ public class TreeGridConnector extends GridConnector {
         return (TreeGridState) super.getState();
     }
 
+    private Grid.Column getColumn(String columnId) {
+        return getColumnIdToColumn().get(columnId);
+    }
+
     @Override
     public void onStateChanged(StateChangeEvent stateChangeEvent) {
         super.onStateChanged(stateChangeEvent);
 
-        // Change renderer of hierarchy column
-        if (stateChangeEvent.hasPropertyChanged("columns")) {
+        if (stateChangeEvent.hasPropertyChanged("hierarchyColumnId") ||
+                stateChangeEvent.hasPropertyChanged("columns")) {
 
-            // Column set by developer or the first one in order
-            String hierarchyColumnId =
-                    getState().hierarchyColumnId != null ? getState().hierarchyColumnId : getState().columnOrder.get(0);
+            // Id of old hierarchy column
+            String oldHierarchyColumnId = this.hierarchyColumnId;
 
-            // Find column's state
-            GridColumnState hierarchyColumnState = null;
-            for (GridColumnState cs : getState().columns) {
-                if (hierarchyColumnId.equals(cs.id)) {
-                    hierarchyColumnState = cs;
-                    break;
-                }
+            // Id of new hierarchy column. Choose first when nothing explicitly set
+            String newHierarchyColumnId = getState().hierarchyColumnId;
+            if (newHierarchyColumnId == null) {
+                newHierarchyColumnId = getState().columnOrder.get(0);
             }
 
-            // Find column
-            Grid.Column hierarchyColumn = getColumnIdToColumn().get(hierarchyColumnId);
+            // Columns
+            Grid.Column newColumn = getColumn(newHierarchyColumnId);
+            Grid.Column oldColumn = getColumn(oldHierarchyColumnId);
 
-            // Set renderer
-            if (hierarchyColumnState != null && hierarchyColumn != null) {
+            // Unwrap renderer of old column
+            if (oldColumn != null && oldColumn.getRenderer() instanceof HierarchyRenderer) {
+                oldColumn.setRenderer(((HierarchyRenderer) oldColumn.getRenderer()).getInnerRenderer());
+            }
+
+            // Wrap renderer of new column
+            if (newColumn != null) {
                 HierarchyRenderer wrapperRenderer = getHierarchyRenderer();
-                wrapperRenderer.setInnerRenderer(
-                        ((AbstractRendererConnector) hierarchyColumnState.rendererConnector).getRenderer());
-                hierarchyColumn.setRenderer(wrapperRenderer);
+                wrapperRenderer.setInnerRenderer(newColumn.getRenderer());
+                newColumn.setRenderer(wrapperRenderer);
 
                 // Set frozen columns again after setting hierarchy column as setRenderer() replaces DOM elements
                 getWidget().setFrozenColumnCount(getState().frozenColumnCount);
+
+                this.hierarchyColumnId = newHierarchyColumnId;
             } else {
-                Logger.getLogger(TreeGridConnector.class.getName()).warning("Hierarchy column could not be found");
+                Logger.getLogger(TreeGridConnector.class.getName())
+                        .warning("Couldn't find column: " + newHierarchyColumnId);
             }
         }
     }
