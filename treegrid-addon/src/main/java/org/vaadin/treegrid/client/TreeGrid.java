@@ -16,11 +16,11 @@ public class TreeGrid extends Grid<JsonObject> {
     }-*/;
 
     /**
-     * Expose {@link Grid#getEscalator()} method to current package
-     * @return
+     * {@inheritDoc}
+     * Exposed for compatibility with Vaadin 7.7.6
      */
     @Override
-    protected Escalator getEscalator() {
+    public Escalator getEscalator() {
         return super.getEscalator();
     }
 
