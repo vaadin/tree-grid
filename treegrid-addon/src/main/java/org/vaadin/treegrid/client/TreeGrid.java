@@ -1,6 +1,8 @@
 package org.vaadin.treegrid.client;
 
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.event.shared.HandlerRegistration;
+import com.vaadin.client.widget.grid.events.BodyClickHandler;
 import com.vaadin.client.widgets.Escalator;
 import com.vaadin.client.widgets.Grid;
 
@@ -30,4 +32,10 @@ public class TreeGrid extends Grid<JsonObject> {
     native boolean isElementInChildWidget(Element e)/*-{
         return this.@com.vaadin.client.widgets.Grid::isElementInChildWidget(*)(e);
     }-*/;
+
+    // Register click handler with the TreeGridClickEvent subclass instead
+    @Override
+    public HandlerRegistration addBodyClickHandler(BodyClickHandler handler) {
+        return addHandler(handler, TreeGridClickEvent.TYPE);
+    }
 }

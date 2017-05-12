@@ -1,28 +1,41 @@
 package org.vaadin.treegrid.client;
 
+import com.google.gwt.dom.client.BrowserEvents;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.EventTarget;
+import com.vaadin.client.WidgetUtil;
 import com.vaadin.client.widget.escalator.RowContainer;
-import com.vaadin.client.widget.grid.CellReference;
 import com.vaadin.client.widget.grid.events.AbstractGridMouseEventHandler;
 import com.vaadin.client.widget.grid.events.GridClickEvent;
+import com.vaadin.client.widgets.Grid;
 import com.vaadin.shared.ui.grid.GridConstants;
 
 /**
- * Class to set as value of {@link com.vaadin.client.widgets.Grid#clickEvent}. <br/>
+ * {@inheritDoc}
+ * <p>
  * Differs from {@link GridClickEvent} only in allowing events to originate form hierarchy widget.
- *
  */
 class TreeGridClickEvent extends GridClickEvent {
 
-    TreeGridClickEvent(TreeGrid grid,
-            CellReference<?> targetCell) {
-        super(grid, targetCell);
+    public static final Type<AbstractGridMouseEventHandler.GridClickHandler> TYPE = new Type<>(
+            BrowserEvents.CLICK, new TreeGridClickEvent());
+
+    public TreeGridClickEvent() {
     }
 
     @Override
     public TreeGrid getGrid() {
-        return (TreeGrid) super.getGrid();
+        // Copied from AbstractGridMouseEvent.getGrid() and changed to find TreeGrid class
+        EventTarget target = getNativeEvent().getEventTarget();
+        if (!Element.is(target)) {
+            return null;
+        }
+        return WidgetUtil.findWidget(Element.as(target), TreeGrid.class);
+    }
+
+    @Override
+    public Type<AbstractGridMouseEventHandler.GridClickHandler> getAssociatedType() {
+        return TYPE;
     }
 
     @Override
@@ -30,6 +43,12 @@ class TreeGridClickEvent extends GridClickEvent {
         EventTarget target = getNativeEvent().getEventTarget();
         if (!Element.is(target)) {
             // Target is not an element
+            return;
+        }
+
+        Grid<?> grid = getGrid();
+        if (grid == null) {
+            // Target is not an element of a grid
             return;
         }
 
