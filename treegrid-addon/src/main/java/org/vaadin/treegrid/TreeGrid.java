@@ -261,10 +261,11 @@ public class TreeGrid extends Grid {
                 try {
                     final Column column;
                     Method getColumnByColumnId = Grid.class.getDeclaredMethod("getColumnByColumnId", String.class);
+                    getColumnByColumnId.setAccessible(true);
                     column = (Column) getColumnByColumnId.invoke(TreeGrid.this, id);
 
                     Method getState = Column.class.getDeclaredMethod("getState");
-
+                    getState.setAccessible(true);
                     final GridColumnState columnState = (GridColumnState) getState.invoke(column);
 
                     if (columnState.hidden != hidden) {
