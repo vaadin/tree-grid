@@ -251,7 +251,7 @@ public class ContainerCollapsibleWrapper extends AbstractContainer implements Co
         if (collapsed) {
             expandedItemIds.remove(itemId);
             hideDescendants(itemId);
-        } else {
+        } else if (isCollapsed(itemId)){
             expandedItemIds.add(itemId);
             showDescendants(itemId);
         }
