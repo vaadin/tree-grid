@@ -4,6 +4,8 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Element;
 import com.google.web.bindery.event.shared.HandlerRegistration;
 import com.vaadin.client.ServerConnector;
@@ -42,39 +44,44 @@ public class TreeGridConnector extends GridConnector {
 
         if (stateChangeEvent.hasPropertyChanged("hierarchyColumnId") ||
                 stateChangeEvent.hasPropertyChanged("columns")) {
+            
+            Scheduler.get().scheduleFinally(new ScheduledCommand() {
+                @Override
+                public void execute() {
+                    // Id of old hierarchy column
+                    String oldHierarchyColumnId = hierarchyColumnId;
 
-            // Id of old hierarchy column
-            String oldHierarchyColumnId = this.hierarchyColumnId;
+                    // Id of new hierarchy column. Choose first when nothing explicitly set
+                    String newHierarchyColumnId = getState().hierarchyColumnId;
+                    if (newHierarchyColumnId == null) {
+                        newHierarchyColumnId = getState().columnOrder.get(0);
+                    }
 
-            // Id of new hierarchy column. Choose first when nothing explicitly set
-            String newHierarchyColumnId = getState().hierarchyColumnId;
-            if (newHierarchyColumnId == null) {
-                newHierarchyColumnId = getState().columnOrder.get(0);
-            }
+                    // Columns
+                    Grid.Column newColumn = getColumn(newHierarchyColumnId);
+                    Grid.Column oldColumn = getColumn(oldHierarchyColumnId);
 
-            // Columns
-            Grid.Column newColumn = getColumn(newHierarchyColumnId);
-            Grid.Column oldColumn = getColumn(oldHierarchyColumnId);
+                    // Unwrap renderer of old column
+                    if (oldColumn != null && oldColumn.getRenderer() instanceof HierarchyRenderer) {
+                        oldColumn.setRenderer(((HierarchyRenderer) oldColumn.getRenderer()).getInnerRenderer());
+                    }
 
-            // Unwrap renderer of old column
-            if (oldColumn != null && oldColumn.getRenderer() instanceof HierarchyRenderer) {
-                oldColumn.setRenderer(((HierarchyRenderer) oldColumn.getRenderer()).getInnerRenderer());
-            }
+                    // Wrap renderer of new column
+                    if (newColumn != null) {
+                        HierarchyRenderer wrapperRenderer = getHierarchyRenderer();
+                        wrapperRenderer.setInnerRenderer(newColumn.getRenderer());
+                        newColumn.setRenderer(wrapperRenderer);
 
-            // Wrap renderer of new column
-            if (newColumn != null) {
-                HierarchyRenderer wrapperRenderer = getHierarchyRenderer();
-                wrapperRenderer.setInnerRenderer(newColumn.getRenderer());
-                newColumn.setRenderer(wrapperRenderer);
+                        // Set frozen columns again after setting hierarchy column as setRenderer() replaces DOM elements
+                        getWidget().setFrozenColumnCount(getState().frozenColumnCount);
 
-                // Set frozen columns again after setting hierarchy column as setRenderer() replaces DOM elements
-                getWidget().setFrozenColumnCount(getState().frozenColumnCount);
-
-                this.hierarchyColumnId = newHierarchyColumnId;
-            } else {
-                Logger.getLogger(TreeGridConnector.class.getName())
-                        .warning("Couldn't find column: " + newHierarchyColumnId);
-            }
+                        hierarchyColumnId = newHierarchyColumnId;
+                    } else {
+                        Logger.getLogger(TreeGridConnector.class.getName())
+                                .warning("Couldn't find column: " + newHierarchyColumnId);
+                    }
+                }
+            });
         }
     }
 
