@@ -1,4 +1,7 @@
 [![Build Status](https://travis-ci.org/vaadin/tree-grid.svg?branch=master)](https://travis-ci.org/vaadin/tree-grid)
+[![Published on Vaadin  Directory](https://img.shields.io/badge/Vaadin%20Directory-published-00b4f0.svg)](https://vaadin.com/directory/component/vaadin-treegrid)
+[![Stars on Vaadin Directory](https://img.shields.io/vaadin-directory/star/vaadin-treegrid.svg)](https://vaadin.com/directory/component/vaadin-treegrid)
+
 
 # Vaadin TreeGrid add-on
 
