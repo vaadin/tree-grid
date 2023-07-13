@@ -44,8 +44,8 @@ class HierarchyRenderer extends ClickableRenderer<Object, Widget> {
         int depth = 0;
         boolean leaf = false;
         boolean collapsed = false;
-        if (row.hasKey(GridState.JSONKEY_ROWDESCRIPTION)) {
-            JsonObject rowDescription = row.getObject(GridState.JSONKEY_ROWDESCRIPTION);
+        if (row.hasKey(TreeGridState.JSONKEY_HIERARCHYDATA)) {
+            JsonObject rowDescription = row.getObject(TreeGridState.JSONKEY_HIERARCHYDATA);
 
             depth = (int) rowDescription.getNumber("depth");
             leaf = rowDescription.getBoolean("leaf");

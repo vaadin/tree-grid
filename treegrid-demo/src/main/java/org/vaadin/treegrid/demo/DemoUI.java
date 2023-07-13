@@ -12,6 +12,7 @@ import com.vaadin.annotations.VaadinServletConfiguration;
 import com.vaadin.data.Property;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
+import com.vaadin.shared.ui.grid.HeightMode;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.UI;
@@ -37,12 +38,14 @@ public class DemoUI extends UI {
         final VerticalLayout layout = new VerticalLayout();
         layout.setSpacing(true);
         layout.setMargin(true);
+        layout.setSizeFull();
 
         final ComboBox combo = new ComboBox(null, Arrays.asList(DEMO_SIMPLE, DEMO_IMAGE));
         combo.setNullSelectionAllowed(false);
         combo.setSizeUndefined();
         layout.addComponent(combo);
 
+        final VerticalLayout layout2 = new VerticalLayout();
         final TreeGrid grid = new TreeGrid();
         grid.setWidth(800, Unit.PIXELS);
 
@@ -55,8 +58,12 @@ public class DemoUI extends UI {
         grid.setSelectionMode(Grid.SelectionMode.SINGLE);
         grid.setColumnReorderingAllowed(true);
         grid.setEditorEnabled(true);
+        grid.setHeightMode(HeightMode.ROW);
+        grid.setHeightByRows(15);
 
-        layout.addComponent(grid);
+        layout2.addComponent(grid);
+        layout.addComponent(layout2);
+        layout.setExpandRatio(layout2, 1);
 
         combo.addValueChangeListener(new Property.ValueChangeListener() {
             @Override
@@ -87,6 +94,7 @@ public class DemoUI extends UI {
         });
 
         combo.select(DEMO_SIMPLE);
+        setSizeFull();
 
         setContent(layout);
     }
